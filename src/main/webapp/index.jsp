@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>Meta Extraction API</title>
     <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
     <script type="text/javascript" src="/js/jquery.min.js"></script>
     <script type="text/javascript" src="/js/bootstrap-modal.js"></script>
   </head>
@@ -12,7 +13,7 @@
     <div class="container">
       <section>
         <div class="page-header">
-          <h1>Entity extraction <small>extract named entities from a block of text</small></h1>
+          <h1>Named entity extraction</h1>
         </div>
 
         <h3>URL</h3>
@@ -30,19 +31,19 @@
           {
             "entities" : [
               {
-                "text"      : "Damascus",
-                "type"      : "Location",
+                "text"      : "Met Office",
+                "type"      : "Organization",
                 "frequency" : 2
               },
               {
-                "text"      : "Bashar al-Assad",
+                "text"      : "John Prior",
                 "type"      : "Person",
                 "frequency" : 1
               },
               {
-                "text"      : "UN",
-                "type"      : "Organization",
-                "frequency" : 1
+                "text"      : "UK",
+                "type"      : "Location",
+                "frequency" : 2
               }
             ]
           }
@@ -76,7 +77,7 @@ John Prior, national climate manager at the Met Office, said: "While it may have
               </div>
             </div>
             <div class="actions">
-              <input class="btn primary" type="submit" value="Extract">
+              <input class="btn" type="submit" value="Extract">
             </div>
           </fieldset>
         </form>
@@ -86,7 +87,7 @@ John Prior, national climate manager at the Met Office, said: "While it may have
             <a href="#" class="close">&times;</a>
             <h3>Extracted Entities </h3>
           </div>
-          <div class="modal-body">heheheh</div>
+          <div class="modal-body"></div>
         </div>
 
       </section>
