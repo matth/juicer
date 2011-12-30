@@ -57,8 +57,20 @@ class Person(text:String) extends NamedEntity(text)
 class Location(text:String) extends NamedEntity(text)
 
 class NamedEntityContainer(val entities : HashMap[String, NamedEntity] = new HashMap[String, NamedEntity]) {
+  import net.liftweb.json._
+  import net.liftweb.json.JsonDSL._
+
   def add(entity : NamedEntity) = entities.getOrElseUpdate(entity.text, entity).frequency += 1
   def locations     = entities.filter(_._2.isInstanceOf[Location])
   def organizations = entities.filter(_._2.isInstanceOf[Organization])
   def people        = entities.filter(_._2.isInstanceOf[Person])
+
+  def toJson : String = {
+    compact(render(
+      ("entities" -> (entities.map { case (_, entity) =>
+        (("text" -> entity.text) ~ ("type" -> entity.getClass.getSimpleName.toString) ~ ("frequency" -> entity.frequency))
+      }))
+    ))
+  }
+
 }
