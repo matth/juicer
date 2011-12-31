@@ -4,10 +4,12 @@ import org.eclipse.jetty.server.Server
 import org.eclipse.jetty.servlet.ServletHolder
 import org.eclipse.jetty.servlet.DefaultServlet
 import org.eclipse.jetty.servlet.ServletContextHandler
+import util.Properties
 
 object WebMain extends App {
 
-  val server  : Server = new Server(8080)
+  val port = Properties.envOrElse("PORT", "8080").toInt
+  val server  : Server = new Server(port)
   var context : ServletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS)
 
   context.setContextPath("/")
