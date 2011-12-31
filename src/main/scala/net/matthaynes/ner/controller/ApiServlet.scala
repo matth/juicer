@@ -4,6 +4,7 @@ import net.matthaynes.ner.service._
 import org.scalatra._
 import net.liftweb.json._
 import net.liftweb.json.Serialization.{write}
+import net.liftweb.json.Xml.{toJson, toXml}
 
 class ApiServlet extends ScalatraServlet {
 

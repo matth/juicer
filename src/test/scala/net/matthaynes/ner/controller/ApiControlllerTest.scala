@@ -1,9 +1,6 @@
 package net.matthaynes.ner.controller
 
 import org.scalatra.test.scalatest.ScalatraFunSuite
-import org.scalatest.matchers.ShouldMatchers
-import org.scalatest.junit.{JUnitRunner, JUnitSuite}
-import org.junit.runner.RunWith
 import org.mockito.Mockito._
 import org.mockito.Matchers._
 import org.eclipse.jetty.servlet.ServletHolder
@@ -20,6 +17,14 @@ class ApiControllerTest extends ScalatraFunSuite  {
     assert(jsonResponse)
     assert(status == responseStatus)
     assert(body   == "{\"error\":{\"status\":"+responseStatus.toString+",\"message\":\""+responseMessage+"\"}}")
+  }
+
+  test("/entities returns correct data") {
+    post("/entities", List(("text","I went to London")))  {
+      assert(jsonResponse)
+      assert(status == 200)
+      assert(body == "{\"entities\":[{\"type\":\"Location\",\"text\":\"London\",\"frequency\":1}]}")
+    }
   }
 
   test("/entities returns nice message for Method Not Allowed error") {
