@@ -1,16 +1,25 @@
 package net.matthaynes.ner.controller
 
 import net.matthaynes.ner.service._
+import net.matthaynes.ner.serialization._
 import org.scalatra._
+import net.liftweb.json._
+import net.liftweb.json.Serialization.{write}
 
 class ApiController extends ScalatraServlet {
 
-  val service       = new NamedEntityService
+  implicit val formats = new Formats {
+    val dateFormat = DefaultFormats.lossless.dateFormat
+    override val typeHints = ShortTypeHints(List(classOf[NamedEntity]))
+    override val typeHintFieldName = "type"
+  }
 
-  before()          { contentType = "application/json" }
+  val service          = new NamedEntityService
 
-  get("/ping")      { "{\"message\":\"I'm alive!\"}" }
+  before()            { contentType = "application/json" }
 
-  post("/entities") { service.classify(params("text")).toJson }
+  get("/ping")        { write(Map[String, String]("message" -> "I'm alive!")) }
+
+  post("/entities")   { write(Map[String, Iterable[NamedEntity]]( "entities" -> service.classify(params("text")).entities.values)) }
 
 }

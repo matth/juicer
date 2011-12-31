@@ -16,10 +16,13 @@ class NamedEntityServiceTest extends FunSuite {
     was not an issue for Mr Paulson though, as he live in the US not the United Kingdom"""
 
   test("should extract named entities from text") {
-     val container = service.classify(text)
-     assert(container.organizations.size == 5)
-     assert(container.people.size == 3)
-     assert(container.locations.size == 3)
+     val container     = service.classify(text)
+     val locations     = container.entities.filter(_._2.isInstanceOf[Location])
+     val organizations = container.entities.filter(_._2.isInstanceOf[Organization])
+     val people        = container.entities.filter(_._2.isInstanceOf[Person])
+     assert(organizations.size == 5)
+     assert(people.size == 3)
+     assert(locations.size == 3)
      assert(container.entities.getOrElse("United Kingdom",  null).frequency == 2)
      assert(container.entities.getOrElse("Lehman Brothers", null).frequency == 1)
   }
