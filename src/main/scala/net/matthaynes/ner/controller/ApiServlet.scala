@@ -35,6 +35,7 @@ class ApiServlet extends ScalatraServlet {
 
   error {
     case e : java.util.NoSuchElementException => respondWithError("Bad Request " + e.getMessage, 400)
+    case e : _  => respondWithError("Internal Server Error " + e.getMessage, 500)
   }
 
 }
