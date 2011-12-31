@@ -1,6 +1,6 @@
-package net.matthaynes.ner.controller
+package net.matthaynes.juicer.controller
 
-import net.matthaynes.ner.service._
+import net.matthaynes.juicer.service._
 
 class ApiController extends ApiServlet {
 

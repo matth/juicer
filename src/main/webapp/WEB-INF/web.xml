@@ -6,7 +6,7 @@ http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
 
   <servlet>
     <servlet-name>api</servlet-name>
-    <servlet-class>net.matthaynes.ner.controller.ApiController</servlet-class>
+    <servlet-class>net.matthaynes.juicer.controller.ApiController</servlet-class>
     <init-param>
       <description>Scalatra env</description>
       <param-name>org.scalatra.environment</param-name>

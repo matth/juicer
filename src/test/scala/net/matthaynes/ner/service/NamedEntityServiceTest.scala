@@ -1,4 +1,4 @@
-package net.matthaynes.ner.service
+package net.matthaynes.juicer.service
 
 import org.scalatest.FunSuite
 

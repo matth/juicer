@@ -1,4 +1,4 @@
-package net.matthaynes.ner.controller
+package net.matthaynes.jucier.controller
 
 import org.scalatra.test.scalatest.ScalatraFunSuite
 import org.mockito.Mockito._

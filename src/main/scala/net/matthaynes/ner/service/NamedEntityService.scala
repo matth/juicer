@@ -1,4 +1,4 @@
-package net.matthaynes.ner.service
+package net.matthaynes.juicer.service
 
 import edu.stanford.nlp.ie.crf._
 import edu.stanford.nlp.ie.AbstractSequenceClassifier
