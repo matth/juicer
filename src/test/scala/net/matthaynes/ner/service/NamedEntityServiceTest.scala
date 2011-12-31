@@ -15,28 +15,16 @@ class NamedEntityServiceTest extends FunSuite {
     Meanwhile, in London, the capital city of the United Kingdom there was a strike on the London Underground, this
     was not an issue for Mr Paulson though, as he live in the US not the United Kingdom"""
 
-  test("should extract named entities from text") {
-     val container     = service.classify(text)
-     val locations     = container.entities.filter(_._2.isInstanceOf[Location])
-     val organizations = container.entities.filter(_._2.isInstanceOf[Organization])
-     val people        = container.entities.filter(_._2.isInstanceOf[Person])
+  test("should extract named entities from text with correct frequencies") {
+     val entities      = service.classify(text)
+     val locations     = entities.filter(_.isInstanceOf[Location])
+     val organizations = entities.filter(_.isInstanceOf[Organization])
+     val people        = entities.filter(_.isInstanceOf[Person])
      assert(organizations.size == 5)
      assert(people.size == 3)
      assert(locations.size == 3)
-     assert(container.entities.getOrElse("United Kingdom",  null).frequency == 2)
-     assert(container.entities.getOrElse("Lehman Brothers", null).frequency == 1)
-  }
-
-}
-
-class NamedEntityContainerTest extends FunSuite {
-  val container = new NamedEntityContainer
-
-  test("add() increments and entity's frequency and adds to internal map") {
-    val entity = new Location("London")
-    (1 to 3) foreach { _ => container.add(entity) }
-    assert(entity.frequency == 3)
-    assert(container.entities.size == 1)
+     assert(entities.filter(_.text == "United Kingdom").head.frequency == 2)
+     assert(entities.filter(_.text == "Lehman Brothers").head.frequency == 1)
   }
 
 }

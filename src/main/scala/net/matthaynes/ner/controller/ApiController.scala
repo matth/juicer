@@ -1,7 +1,6 @@
 package net.matthaynes.ner.controller
 
 import net.matthaynes.ner.service._
-import net.matthaynes.ner.serialization._
 import org.scalatra._
 import net.liftweb.json._
 import net.liftweb.json.Serialization.{write}
@@ -20,6 +19,6 @@ class ApiController extends ScalatraServlet {
 
   get("/ping")        { write(Map[String, String]("message" -> "I'm alive!")) }
 
-  post("/entities")   { write(Map[String, Iterable[NamedEntity]]( "entities" -> service.classify(params("text")).entities.values)) }
+  post("/entities")   { write(Map[String, List[NamedEntity]]( "entities" -> service.classify(params("text")))) }
 
 }
