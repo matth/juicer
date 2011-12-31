@@ -1,13 +1,11 @@
-package net.matthaynes.juicer.controller
+package net.matthaynes.juicer.web
 
 import org.scalatra.test.scalatest.ScalatraFunSuite
-import org.mockito.Mockito._
-import org.mockito.Matchers._
 import org.eclipse.jetty.servlet.ServletHolder
 
-class ApiControllerTest extends ScalatraFunSuite  {
+class ApiServletTest extends ScalatraFunSuite  {
 
-  val servletHolder = addServlet(classOf[ApiController], "/*")
+  val servletHolder = addServlet(classOf[ApiServlet], "/*")
 
   def jsonResponse : Boolean = {
     header("Content-Type") == "application/json;charset=UTF-8"

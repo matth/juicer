@@ -1,8 +1,8 @@
-package net.matthaynes.juicer.controller
+package net.matthaynes.juicer.web
 
-import net.matthaynes.juicer.service._
+import net.matthaynes.juicer.entities._
 
-class ApiController extends ApiServlet {
+class ApiServlet extends JsonServlet {
 
   val service = new NamedEntityService
 

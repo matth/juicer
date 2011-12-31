@@ -1,6 +1,4 @@
-resolvers += "Web plugin repo" at "http://siasia.github.com/maven2"
+resolvers += Classpaths.typesafeResolver
 
-//Following means libraryDependencies += "com.github.siasia" %% "xsbt-web-plugin" % "0.1.1-<sbt version>""
-libraryDependencies <+= sbtVersion(v => "com.github.siasia" %% "xsbt-web-plugin" % (v+"-0.2.8"))
-
+addSbtPlugin("com.typesafe.startscript" % "xsbt-start-script-plugin" % "0.3.0")
 

@@ -1,12 +1,12 @@
-package net.matthaynes.juicer.controller
+package net.matthaynes.juicer.web
 
-import net.matthaynes.juicer.service._
+import net.matthaynes.juicer.entities._
 import org.scalatra._
 import net.liftweb.json._
 import net.liftweb.json.Serialization.{write}
 import net.liftweb.json.Xml.{toJson, toXml}
 
-class ApiServlet extends ScalatraServlet {
+class JsonServlet extends ScalatraServlet {
 
   implicit val formats = new Formats {
     val dateFormat = DefaultFormats.lossless.dateFormat
