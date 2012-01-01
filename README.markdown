@@ -15,12 +15,12 @@ For more info visit: http://juicer.herokuapp.com/
 
 ### On Heroku
 
-* Clone the repo
-* Install the Heroku tools; be sure heroku is on your path
-** see http://devcenter.heroku.com/articles/heroku-command
-* Type these commands inside the application's git clone:
-** `heroku create --stack cedar`
-** `git push heroku master`
-** `heroku open`
+- Clone the repo
+- Install the Heroku tools; be sure heroku is on your path
+  - see http://devcenter.heroku.com/articles/heroku-command
+- Type these commands inside the application's git clone:
+  - `heroku create --stack cedar`
+  - `git push heroku master`
+  - `heroku open`
 
 
