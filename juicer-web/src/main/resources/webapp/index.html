@@ -2,16 +2,115 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Meta Extraction API</title>
+    <title>juicer - a meta data extraction API</title>
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
     <script type="text/javascript" src="/js/jquery.min.js"></script>
     <script type="text/javascript" src="/js/bootstrap-modal.js"></script>
+    <script type="text/javascript" src="/js/bootstrap-scrollspy.js"></script>
   </head>
 
   <body>
+
+    <!-- Topbar
+    ================================================== -->
+    <div class="topbar" data-scrollspy="scrollspy" >
+      <div class="topbar-inner">
+        <div class="container">
+          <a class="brand" href="#">juicer</a>
+          <ul class="nav">
+            <li class="active"><a href="#overview">Overview</a></li>
+            <li><a href="#articles">Article Metedata</a></li>
+            <li><a href="#entities">Named Entities</a></li>
+            <li><a href="#hackers">Hackers</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Masthead (blueprinty thing)
+    ================================================== -->
+
+    <header class="jumbotron masthead" id="overview">
+      <div class="inner">
+        <div class="container">
+          <h1>juicer</h1>
+          <p class="lead">
+            juicer is a small API for extracting text data from web pages, you provide a URL, <br />
+            and juicer squeezes out the page meta data, body text and named entities
+          </p>
+        </div>
+      </div>
+    </header>
+
+
     <div class="container">
-      <section>
+
+      <section id="overview">
+        <div class="page-header">
+          <h1>About juicer <small>an API for web page meta data extraction</small></h1>
+        </div>
+
+        <p>juicer is a simple API for extracting meta data from the text in web pages. It works best on on "article" type pages such as those you find on blogs and news websites. It may not work at all on some types of page.</p>
+
+        <p>Two end points are provided <code><a href="#articles">/api/article</a></code> and <code><a href="#entities">/api/entities</a></code>, these can be use to extract meta data from a URL or by uploading a blob of text respectively.</p>
+
+        <p>juicer is a toy project, hacked together over the holidays. Please use and abuse it but with no guarantees!</p>
+
+        <h3>Props</h3>
+
+        <p>juicer is other people's excellent work glued together in a web API, it's built with &hellip;</p>
+
+        <ul>
+          <li><a href="https://github.com/jiminoc/goose">Goose</a></li>
+          <li><a href="http://nlp.stanford.edu/software/CRF-NER.shtml">Stanford NER</a></li>
+          <li><a href="http://twitter.github.com/bootstrap/#tables">Bootstrap (for this snazzy layout)</a></li>
+        </ul>
+
+      </section>
+
+      <section id="articles">
+
+        <div class="page-header">
+          <h1>Article meta data extraction</h1>
+        </div>
+
+        <h3>URL</h3>
+        <p><code>GET /api/article</code></p>
+
+        <h3>Parameters</h3>
+
+        <p><code>url</code> - A URL to the article page you want meta data for</p>
+
+        <h3>Response</h3>
+
+        <p>A JSON response, showing article meta data, body text and named entity text, frequency and type (one of Location, Person, Organization)</p>
+
+        <pre>
+          {
+            "article" : {
+              "url"          : http://www.bbc.co.uk/news/world-africa-16377824,
+              "domain"       : "www.bbc.co.uk",
+              "hash"         : "ac2f2e739421184f01c942b057f8449d",
+              "title"        : "South Sudan 'sends more troops' to strife-torn town Pibor",
+              "description"  : "Article meta description ...",
+              "body"         : "Article body text ... ",
+              "entities"     : [
+                {
+                  "text"      : "South Sudan",
+                  "type"      : "Location",
+                  "frequency" : 1
+                },
+                ...
+              ]
+            }
+          }
+        </pre>
+
+      </section>
+
+      <section id="entities">
+
         <div class="page-header">
           <h1>Named entity extraction</h1>
         </div>
@@ -91,9 +190,23 @@ John Prior, national climate manager at the Met Office, said: "While it may have
         </div>
 
       </section>
+
+      <section id="hackers">
+        <div class="page-header">
+          <h1>Hackers <small>play &amp; contribute &hellip;</small></h1>
+        </div>
+
+        <p>
+          juicer is written in Scala, feel free to fork the project and play about. It's still in the "toy" project stage
+          so contributions are very much welcome.
+        </p>
+
+        <p>Github url: <a href="https://github.com/matth/juicer">https://github.com/matth/juicer</a></p>
+      </section>
     </div>
 
     <script type="text/javascript" src="/js/script.js"></script>
+
   </body>
 
 </html>
