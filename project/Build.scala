@@ -54,16 +54,16 @@ object JuicerBuild extends Build {
                       settings = projectSettings ++
                       Seq(
                           StartScriptPlugin.stage in Compile := Unit
-                      )) aggregate(entities, web)
+                      )) aggregate(service, web)
 
-    lazy val entities = Project("juicer-entities",
-                      file("juicer-entities"),
+    lazy val service = Project("juicer-service",
+                      file("juicer-service"),
                       settings = projectSettings)
 
     lazy val web = Project("juicer-web",
                       file("juicer-web"),
                       settings = projectSettings ++
                       StartScriptPlugin.startScriptForClassesSettings ++
-                      Seq(libraryDependencies ++= Seq(jettyServer, jettyServlet, slf4jSimple, liftJson, scalatra, scalatraTest))) dependsOn(entities % "compile->compile;test->test")
+                      Seq(libraryDependencies ++= Seq(jettyServer, jettyServlet, slf4jSimple, liftJson, scalatra, scalatraTest))) dependsOn(service % "compile->compile;test->test")
 
 }

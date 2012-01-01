@@ -1,6 +1,6 @@
 package net.matthaynes.juicer.web
 
-import net.matthaynes.juicer.entities._
+import net.matthaynes.juicer.service._
 
 class ApiServlet extends JsonServlet {
 

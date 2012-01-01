@@ -1,6 +1,6 @@
 package net.matthaynes.juicer.web
 
-import net.matthaynes.juicer.entities._
+import net.matthaynes.juicer.service._
 import org.scalatra._
 import net.liftweb.json._
 import net.liftweb.json.Serialization.{write}
