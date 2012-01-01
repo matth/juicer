@@ -57,11 +57,11 @@ object JuicerBuild extends Build {
                       )) aggregate(entities, web)
 
     lazy val entities = Project("juicer-entities",
-                      file("entities"),
+                      file("juicer-entities"),
                       settings = projectSettings)
 
     lazy val web = Project("juicer-web",
-                      file("web"),
+                      file("juicer-web"),
                       settings = projectSettings ++
                       StartScriptPlugin.startScriptForClassesSettings ++
                       Seq(libraryDependencies ++= Seq(jettyServer, jettyServlet, slf4jSimple, liftJson, scalatra, scalatraTest))) dependsOn(entities % "compile->compile;test->test")
