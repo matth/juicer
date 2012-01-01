@@ -16,7 +16,7 @@ object BuildSettings {
         scalaVersion := buildScalaVersion,
         scalacOptions += "-deprecation",
         fork in test := true,
-        libraryDependencies ++= Seq(scalaTest),
+        libraryDependencies ++= Seq(scalaTest, mockito),
         resolvers := Seq(sonatypeRepo, akkaRepo, guiceyfruit)
       )
 
@@ -34,6 +34,7 @@ object Dependencies {
   val scalatraTest = "org.scalatra" %% "scalatra-scalatest" % "2.0.1" % "test"
   val scalatra     = "org.scalatra" %% "scalatra" % "2.0.1"
   val liftJson     = "net.liftweb" %% "lift-json" % "2.4-M5"
+  val mockito      = "org.mockito" % "mockito-core" % "1.8.4" % "test"
 
   val jettyVersion = "7.4.0.v20110414"
   val jettyServer = "org.eclipse.jetty" % "jetty-server" % jettyVersion
@@ -50,7 +51,6 @@ object Dependencies {
   val commonsLang    = "commons-lang" % "commons-lang" % "2.6"
   val akkaActor      = "se.scalablesolutions.akka" % "akka-actor" % "1.1.3"
   val akkaTypedActor = "se.scalablesolutions.akka" % "akka-typed-actor" % "1.1.3"
-
 }
 
 object JuicerBuild extends Build {
