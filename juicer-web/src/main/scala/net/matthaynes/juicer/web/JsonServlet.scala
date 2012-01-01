@@ -6,7 +6,7 @@ import net.liftweb.json._
 import net.liftweb.json.Serialization.{write}
 import net.liftweb.json.Xml.{toJson, toXml}
 
-class JsonServlet extends ScalatraServlet {
+trait JsonServlet extends ScalatraServlet {
 
   implicit val formats = new Formats {
     val dateFormat = DefaultFormats.lossless.dateFormat
