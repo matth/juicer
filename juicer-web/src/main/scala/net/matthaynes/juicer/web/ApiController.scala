@@ -6,8 +6,8 @@ class ApiServlet extends JsonServlet {
 
   val service = new NamedEntityService
 
-  get("/ping")        { respond(Map("message"  -> "I'm alive!")) }
+  get("/ping")        { Map("message"  -> "I'm alive!") }
 
-  post("/entities")   { respond(Map("entities" -> service.classify(params("text")))) }
+  post("/entities")   { Map("entities" -> service.classify(params("text"))) }
 
 }

@@ -26,7 +26,10 @@ class ApiServletTest extends ScalatraFunSuite  {
   }
 
   test("/entities returns nice message for Method Not Allowed error") {
-    get("/entities")  { assertError(405, "Method Not Allowed") }
+    get("/entities")  {
+      assertError(405, "Method Not Allowed")
+      assert(header("Allow") == "POST")
+    }
   }
 
   test("/entities returns nice message for missing param") {

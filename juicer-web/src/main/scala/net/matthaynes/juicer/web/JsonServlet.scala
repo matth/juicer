@@ -14,29 +14,31 @@ class JsonServlet extends ScalatraServlet {
     override val typeHintFieldName = "type"
   }
 
-  def respond(responseBody : Map[String, Any], responseStatus : Int = 200) : String = {
-    status(responseStatus)
-    contentType = "application/json"
-    write(responseBody)
+  override protected def renderResponseBody(actionResult: Any) {
+    super.renderResponseBody(write(actionResult.asInstanceOf[AnyRef]))
   }
 
-  def respondWithError(message : String, responseStatus : Int = 500) : String = {
-    val responseBody = Map("error" -> Map("status" -> responseStatus, "message" -> message))
-    respond(responseBody, responseStatus)
+  def renderError(code : Int, message : String, headers : Map[String, String] = Map()) = {
+    status(code)
+    headers foreach { case (k, v) => { response.setHeader(k, v) } }
+    Map("error" -> Map("status" -> code, "message" -> message))
+  }
+
+  before() {
+    contentType = "application/json"
   }
 
   notFound {
-    respondWithError("Not Found", 404)
+    renderError(404, "Not Found")
   }
 
   methodNotAllowed { allow =>
-    response.setHeader("Allow", allow.mkString(", "))
-    respondWithError("Method Not Allowed", 405)
+    renderError(405, "Method Not Allowed", Map("Allow" -> allow.mkString(", ")))
   }
 
   error {
-    case e : java.util.NoSuchElementException => respondWithError("Bad Request " + e.getMessage, 400)
-    case e : Exception => respondWithError("Internal Server Error " + e.getMessage, 500)
+    case e : java.util.NoSuchElementException => renderError(400, "Bad Request " + e.getMessage)
+    case e : Exception => renderError(500, "Internal Server Error " + e.getMessage)
   }
 
 }
