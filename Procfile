@@ -1,1 +1,1 @@
-web: web/target/start
+web: juicer-web/target/start
