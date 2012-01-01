@@ -20,8 +20,8 @@ class JsonServlet extends ScalatraServlet {
     write(responseBody)
   }
 
-  def respondWithError(message : String, responseStatus : Int = 500) = {
-    val responseBody = Map[String, Map[String, Any]]("error" -> Map[String, Any]("status" -> responseStatus, "message" -> message))
+  def respondWithError(message : String, responseStatus : Int = 500) : String = {
+    val responseBody = Map("error" -> Map("status" -> responseStatus, "message" -> message))
     respond(responseBody, responseStatus)
   }
 
