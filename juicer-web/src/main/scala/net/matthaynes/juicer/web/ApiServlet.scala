@@ -4,10 +4,12 @@ import net.matthaynes.juicer.service._
 
 class ApiServlet extends JsonServlet {
 
-  val service = new NamedEntityService
+  val service = new ArticleExtractorService
 
-  get("/ping")        { Map("message"  -> "I'm alive!") }
+  get("/ping")        { Map("message"  -> "pong") }
 
-  post("/entities")   { Map("entities" -> service.classify(params("text"))) }
+  get("/article")     { Map("article"  -> service.extract(params("url"))) }
+
+  post("/entities")   { Map("entities" -> service.entities.classify(params("text"))) }
 
 }
