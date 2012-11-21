@@ -20,6 +20,7 @@ For more info visit: http://juicer.herokuapp.com/
   - see http://devcenter.heroku.com/articles/heroku-command
 - Type these commands inside the application's git clone:
   - `heroku create --stack cedar`
+  - `heroku config:add BUILDPACK_URL=https://github.com/heroku/heroku-buildpack-scala.git#perm-gen`
   - `git push heroku master`
   - `heroku open`
 
