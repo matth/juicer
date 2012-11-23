@@ -25,7 +25,7 @@ object BuildSettings {
 
 object Resolvers {
   val sonatypeRepo = "Sonatype Release" at "http://oss.sonatype.org/content/repositories/releases"
-  val akkaRepo     = "Akka Maven Repository" at "http://akka.io/repository"
+  val akkaRepo     = "Akka Maven Repository" at "http://repo.akka.io/releases/"
   val guiceyfruit  = "GuiceyFruit Release Repository" at "http://guiceyfruit.googlecode.com/svn/repo/releases/"
 }
 
@@ -49,8 +49,8 @@ object Dependencies {
   val commonsIO  = "commons-io" % "commons-io" % "2.0.1"
   val httpComponents = "org.apache.httpcomponents" % "httpclient" % "4.1.2"
   val commonsLang    = "commons-lang" % "commons-lang" % "2.6"
-  val akkaActor      = "se.scalablesolutions.akka" % "akka-actor" % "1.1.3"
-  val akkaTypedActor = "se.scalablesolutions.akka" % "akka-typed-actor" % "1.1.3"
+  val akkaActor      = "se.scalablesolutions.akka" % "akka-actor" % "1.3.1"
+  val akkaTypedActor = "se.scalablesolutions.akka" % "akka-typed-actor" % "1.3.1"
 }
 
 object JuicerBuild extends Build {
