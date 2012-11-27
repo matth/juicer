@@ -17,7 +17,7 @@ object BuildSettings {
         scalacOptions += "-deprecation",
         fork in test := true,
         libraryDependencies ++= Seq(scalaTest, mockito),
-        resolvers := Seq(sonatypeRepo, akkaRepo, guiceyfruit)
+        resolvers := Seq(sonatypeRepo)
       )
 
   val projectSettings = Defaults.defaultSettings ++ globalSettings
@@ -25,8 +25,6 @@ object BuildSettings {
 
 object Resolvers {
   val sonatypeRepo = "Sonatype Release" at "http://oss.sonatype.org/content/repositories/releases"
-  val akkaRepo     = "Akka Maven Repository" at "http://repo.akka.io/releases/"
-  val guiceyfruit  = "GuiceyFruit Release Repository" at "http://guiceyfruit.googlecode.com/svn/repo/releases/"
 }
 
 object Dependencies {
@@ -44,13 +42,7 @@ object Dependencies {
   val slf4jSimple = "org.slf4j" % "slf4j-simple" % "1.6.2"
   val slf4jSimpleTest = slf4jSimple % "test"
 
-  // Goose deps, they have no maven repo, https://github.com/jiminoc/goose/issues/29
-  val jsoup      = "org.jsoup" % "jsoup" % "1.6.1"
-  val commonsIO  = "commons-io" % "commons-io" % "2.0.1"
-  val httpComponents = "org.apache.httpcomponents" % "httpclient" % "4.1.2"
-  val commonsLang    = "commons-lang" % "commons-lang" % "2.6"
-  val akkaActor      = "se.scalablesolutions.akka" % "akka-actor" % "1.3.1"
-  val akkaTypedActor = "se.scalablesolutions.akka" % "akka-typed-actor" % "1.3.1"
+  val goose = "com.gravity" % "goose" % "2.1.22"
 }
 
 object JuicerBuild extends Build {
@@ -70,7 +62,7 @@ object JuicerBuild extends Build {
     lazy val service = Project("juicer-service",
                       file("juicer-service"),
                       settings = projectSettings ++
-                      Seq(libraryDependencies ++= Seq(slf4jSimple, slf4jSimpleTest, jsoup, commonsIO, httpComponents, commonsLang, akkaActor, akkaTypedActor)))
+                      Seq(libraryDependencies ++= Seq(slf4jSimple, slf4jSimpleTest, goose)))
 
 
     lazy val web = Project("juicer-web",
