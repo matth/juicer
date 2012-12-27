@@ -20,7 +20,12 @@ class Location(val text : String, var frequency : Int = 0) extends NamedEntity
 
 class NamedEntityService {
 
-  val classifier = CRFClassifier.getClassifierNoExceptions("all.3class.distsim.crf.ser.gz")
+  val classifier = {
+    val model = getClass.getResourceAsStream("/edu/stanford/nlp/models/ner/english.all.3class.distsim.crf.ser.gz")
+    val is = new java.io.BufferedInputStream(model)
+    val gzipped = new java.util.zip.GZIPInputStream(is)
+    CRFClassifier.getClassifier(gzipped)
+  }
 
   def classify(text : String) : List[NamedEntity] = {
 

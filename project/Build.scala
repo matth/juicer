@@ -43,6 +43,7 @@ object Dependencies {
   val slf4jSimpleTest = slf4jSimple % "test"
 
   val goose = "com.gravity" % "goose" % "2.1.22"
+  val corenlp = "edu.stanford.nlp" % "stanford-corenlp" % "1.3.4" classifier "models" classifier ""
 }
 
 object JuicerBuild extends Build {
@@ -62,7 +63,7 @@ object JuicerBuild extends Build {
     lazy val service = Project("juicer-service",
                       file("juicer-service"),
                       settings = projectSettings ++
-                      Seq(libraryDependencies ++= Seq(slf4jSimple, slf4jSimpleTest, goose)))
+                      Seq(libraryDependencies ++= Seq(slf4jSimple, slf4jSimpleTest, goose, corenlp)))
 
 
     lazy val web = Project("juicer-web",
