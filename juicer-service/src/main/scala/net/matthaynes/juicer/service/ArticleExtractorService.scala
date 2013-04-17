@@ -3,7 +3,7 @@ package net.matthaynes.juicer.service
 import com.gravity.goose._
 import java.util.Date
 
-case class ExtractedArticle(val url:String, val domain:String, val hash:String,
+case class ExtractedArticle(val url:String, val domain:String, val hash:String, val publishDate:Date,
   val title:String, val description:String, val body:String, val entities: List[NamedEntity])
 
 class ArticleExtractorService {
@@ -21,7 +21,7 @@ class ArticleExtractorService {
     val article  = goose.extractContent(url)
     var text     = List(article.title, article.cleanedArticleText).filter(_ != null).mkString(" ")
 
-    new ExtractedArticle(article.canonicalLink, article.domain, article.linkhash,
+    new ExtractedArticle(article.canonicalLink, article.domain, article.linkhash, article.publishDate,
       article.title, article.metaDescription, article.cleanedArticleText, entities.classify(text))
 
   }
