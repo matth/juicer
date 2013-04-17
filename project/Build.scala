@@ -1,6 +1,6 @@
 import sbt._
 import Keys._
-import com.typesafe.startscript.StartScriptPlugin
+import com.typesafe.sbt.SbtStartScript
 
 object BuildSettings {
   import Dependencies._
@@ -29,8 +29,8 @@ object Resolvers {
 
 object Dependencies {
   val scalaTest    = "org.scalatest" %% "scalatest" % "1.6.1" % "test"
-  val scalatraTest = "org.scalatra" %% "scalatra-scalatest" % "2.0.1" % "test"
-  val scalatra     = "org.scalatra" %% "scalatra" % "2.0.1"
+  val scalatraTest = "org.scalatra" %% "scalatra-scalatest" % "2.0.4" % "test"
+  val scalatra     = "org.scalatra" %% "scalatra" % "2.0.4"
   val liftJson     = "net.liftweb" %% "lift-json" % "2.4-M5"
   val mockito      = "org.mockito" % "mockito-core" % "1.8.4" % "test"
 
@@ -57,7 +57,7 @@ object JuicerBuild extends Build {
                       file("."),
                       settings = projectSettings ++
                       Seq(
-                          StartScriptPlugin.stage in Compile := Unit
+                          SbtStartScript.stage in Compile := Unit
                       )) aggregate(service, web)
 
     lazy val service = Project("juicer-service",
@@ -69,7 +69,7 @@ object JuicerBuild extends Build {
     lazy val web = Project("juicer-web",
                       file("juicer-web"),
                       settings = projectSettings ++
-                      StartScriptPlugin.startScriptForClassesSettings ++
+                      SbtStartScript.startScriptForClassesSettings ++
                       Seq(libraryDependencies ++= Seq(jettyServer, jettyServlet, slf4jSimple, liftJson, scalatra, scalatraTest))) dependsOn(service % "compile->compile;test->test")
 
 }
