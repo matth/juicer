@@ -14,6 +14,8 @@ import org.jsoup.nodes.Element
 import java.util.Date
 import net.liftweb.json._
 
+// import com.gravity.goose.utils.Logging
+
 case class ExtractedArticle(val url:String, val domain:String, val hash:String, val publishDate:Date,
   val title:String, val description:String, val body:String, val entities: List[NamedEntity], val topImage:String, val additionalData:Map[String, String])
 
@@ -150,6 +152,10 @@ class ArticleExtractorService {
           val dateStr = el.attr("content");
 
           return parseDate(dateStr)
+        } else if (el.hasAttr("value")) {
+          val dateStr = el.attr("value");
+
+          return parseDate(dateStr)
         } else {
           return parseDate(el.text())
         }
@@ -221,6 +227,14 @@ class ArticleExtractorService {
         "MM/dd/yyyy",
         "MM-dd-yyyy",
         "EEE, MMM dd, yyyy",
+        "MM/dd/yyyy hh:mm:ss a",
+        "MM-dd-yyyy hh:mm:ss a",
+        "MM/dd/yyyy hh:mm a",
+        "MM-dd-yyyy hh:mm a",
+        "yyyy-MM-dd hh:mm:ss a", 
+        "yyyy/MM/dd hh:mm:ss a ", 
+        "yyyy-MM-dd hh:mm a",
+        "yyyy/MM/dd hh:mm ",
         "dd MMM yyyy",
         "dd MMMM yyyy",
         "yyyyMMddHHmm",
