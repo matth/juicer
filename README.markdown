@@ -19,8 +19,7 @@ For more info visit: http://juicer.herokuapp.com/
 - Install the Heroku tools; be sure heroku is on your path
   - see http://devcenter.heroku.com/articles/heroku-command
 - Type these commands inside the application's git clone:
-  - `heroku create --stack cedar`
-  - `heroku config:add BUILDPACK_URL=https://github.com/heroku/heroku-buildpack-scala.git#perm-gen`
+  - `heroku create -s cedar --buildpack http://github.com/heroku/heroku-buildpack-scala.git`
   - `git push heroku master`
   - `heroku open`
 
