@@ -1,1 +1,1 @@
-web: JAVA_OPTS="$JAVA_OPTS -Xmx512m" juicer-web/target/start
+web: juicer-web/target/start
