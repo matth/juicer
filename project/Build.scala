@@ -17,7 +17,7 @@ object BuildSettings {
         scalacOptions += "-deprecation",
         fork in test := true,
         libraryDependencies ++= Seq(scalaTest, mockito),
-        resolvers := Seq(sonatypeRepo)
+        resolvers := Seq(sonatypeRepo, sonatypeSnapshotsRepo)
       )
 
   val projectSettings = Defaults.defaultSettings ++ globalSettings
@@ -25,6 +25,7 @@ object BuildSettings {
 
 object Resolvers {
   val sonatypeRepo = "Sonatype Release" at "http://oss.sonatype.org/content/repositories/releases"
+  val sonatypeSnapshotsRepo = "Sonatype Snapshot" at "http://oss.sonatype.org/content/repositories/snapshots"
 }
 
 object Dependencies {
@@ -42,7 +43,7 @@ object Dependencies {
   val slf4jSimple = "org.slf4j" % "slf4j-simple" % "1.6.2"
   val slf4jSimpleTest = slf4jSimple % "test"
 
-  val goose = "com.gravity" % "goose" % "2.1.22"
+  val goose = "com.gravity" % "goose" % "2.1.23-SNAPSHOT"
   val corenlp = "edu.stanford.nlp" % "stanford-corenlp" % "1.3.4"
 }
 

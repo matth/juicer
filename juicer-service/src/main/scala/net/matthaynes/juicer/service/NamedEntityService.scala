@@ -18,18 +18,24 @@ class Organization(val text : String, var frequency : Int = 0) extends NamedEnti
 class Person(val text : String, var frequency : Int = 0) extends NamedEntity
 class Location(val text : String, var frequency : Int = 0) extends NamedEntity
 
-class NamedEntityService {
-
+object NamedEntityService {
   val classifier = {
     val model = getClass.getResourceAsStream("/english.all.3class.distsim.crf.ser.gz")
     val is = new java.io.BufferedInputStream(model)
     val gzipped = new java.util.zip.GZIPInputStream(is)
-    CRFClassifier.getClassifier(gzipped)
+    val c = CRFClassifier.getClassifier(gzipped)
+    model.close
+    is.close
+    gzipped.close
+    c
   }
+}
+
+class NamedEntityService {
 
   def classify(text : String) : List[NamedEntity] = {
 
-    val results   = classifier.classify(text)
+    val results   = NamedEntityService.classifier.classify(text)
 
     val entities  = asScalaBuffer(results).foldLeft(new HashMap[String, NamedEntity]) {
 

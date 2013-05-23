@@ -1,6 +1,6 @@
 package net.matthaynes.juicer.service
 
-import com.gravity.goose._
+import com.gravity.goose.{ Article => GooseArticle, _ }
 import org.scalatest.FunSuite
 import org.mockito.Mockito._
 
@@ -8,7 +8,7 @@ class ArticleExtractorServiceTest extends FunSuite {
 
   val url = "http://www.bbc.co.uk/news/world-africa-16377824"
 
-  val article = new Article
+  val article = new GooseArticle
   article.canonicalLink       = "http://www.bbc.co.uk/news/world-africa-16377824"
   article.domain              = "www.bbc.co.uk"
   article.linkhash            = "ac2f2e739421184f01c942b057f8449d"
