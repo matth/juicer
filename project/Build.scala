@@ -54,8 +54,8 @@ object JuicerBuild extends Build {
 
     override lazy val settings = super.settings ++ globalSettings
 
-    lazy val goose = ProjectRef(uri("git://github.com/skyshard/goose.git"), "goose")
-    //lazy val goose = ProjectRef(file("../goose/"), "goose")
+    //lazy val goose = ProjectRef(uri("git://github.com/skyshard/goose.git"), "goose")
+    lazy val goose = ProjectRef(file("../goose/"), "goose")
 
     lazy val root = Project("juicer",
                       file("."),
