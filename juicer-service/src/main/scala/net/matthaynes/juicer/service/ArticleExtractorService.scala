@@ -16,8 +16,19 @@ import net.liftweb.json._
 
 // import com.gravity.goose.utils.Logging
 
-case class ExtractedArticle(val url:String, val domain:String, val hash:String, val publishDate:Date,
-  val title:String, val description:String, val body:String, val entities: List[NamedEntity], val topImage:String, val additionalData:Map[String, String])
+case class ExtractedArticle(
+  val url:String, 
+  val domain:String, 
+  val hash:String, 
+  val publishDate:Date,
+  val title:String, 
+  val description:String, 
+  val body:String, 
+  val entities: List[NamedEntity], 
+  val links: List[String], 
+  val topImage:String, 
+  val additionalData:Map[String, String]
+)
 
 class ArticleExtractorService {
 
@@ -269,7 +280,7 @@ class ArticleExtractorService {
     var text     = List(article.title, article.cleanedArticleText).filter(_ != null).mkString(" ")
 
     new ExtractedArticle(article.canonicalLink, article.domain, article.linkhash, article.publishDate,
-      article.title, article.metaDescription, article.cleanedArticleText, entities.classify(text), article.topImage.imageSrc, article.additionalData.toMap)
+      article.title, article.metaDescription, article.cleanedArticleText, entities.classify(text), article.links.toList, article.topImage.imageSrc, article.additionalData.toMap)
 
   }
 
