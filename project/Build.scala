@@ -1,6 +1,8 @@
 import sbt._
 import Keys._
 import com.typesafe.startscript.StartScriptPlugin
+import sbtassembly.Plugin._
+import AssemblyKeys._
 
 object BuildSettings {
   import Dependencies._
@@ -8,7 +10,7 @@ object BuildSettings {
 
   val buildOrganization = "net.matthaynes"
   val buildVersion = "1.0"
-  val buildScalaVersion = "2.9.0-1"
+  val buildScalaVersion = "2.9.1"
 
   val globalSettings = Seq(
         organization := buildOrganization,
@@ -20,7 +22,7 @@ object BuildSettings {
         resolvers := Seq(sonatypeRepo, sonatypeSnapshotsRepo)
       )
 
-  val projectSettings = Defaults.defaultSettings ++ globalSettings
+  val projectSettings = Defaults.defaultSettings ++ globalSettings ++ assemblySettings
 }
 
 object Resolvers {
@@ -44,7 +46,7 @@ object Dependencies {
   val slf4jSimpleTest = slf4jSimple % "test"
 
   val goose = "com.gravity" % "goose" % "2.1.23-SNAPSHOT"
-  val corenlp = "edu.stanford.nlp" % "stanford-corenlp" % "1.3.4"
+  val corenlp = "edu.stanford.nlp" % "stanford-corenlp" % "1.3.4" exclude("xom", "xom")
 }
 
 object JuicerBuild extends Build {

@@ -23,4 +23,12 @@ For more info visit: http://juicer.herokuapp.com/
   - `git push heroku master`
   - `heroku open`
 
+### Fat jar
+
+Build a fat jar for use anywhere ...
+
+* Run `sbt assembly`
+* Run `java -Xmx1g -jar juicer-web/target/scala-2.9.1/juicer-web-assembly-1.0.jar`
+
+
 
