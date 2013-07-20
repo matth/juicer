@@ -279,8 +279,19 @@ class ArticleExtractorService {
     val article  = goose.extractContent(url)
     var text     = List(article.title, article.cleanedArticleText).filter(_ != null).mkString(" ")
 
-    new ExtractedArticle(article.canonicalLink, article.domain, article.linkhash, article.publishDate,
-      article.title, article.metaDescription, article.cleanedArticleText, entities.classify(text), article.links.toList, article.topImage.imageSrc, article.additionalData.toMap)
+    new ExtractedArticle(
+      article.canonicalLink, 
+      article.domain, 
+      article.linkhash, 
+      article.publishDate,
+      article.title, 
+      article.metaDescription, 
+      article.cleanedArticleText, 
+      entities.classify(text), 
+      Option(article.links).map(_.toList).getOrElse(null), 
+      Option(article.topImage).map(_.imageSrc).getOrElse(null), 
+      Option(article.additionalData).map(_.toMap).getOrElse(null)
+    )
 
   }
 

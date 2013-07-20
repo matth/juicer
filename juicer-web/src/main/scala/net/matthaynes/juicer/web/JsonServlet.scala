@@ -38,7 +38,23 @@ trait JsonServlet extends ScalatraServlet {
 
   error {
     case e : java.util.NoSuchElementException => renderError(400, "Bad Request " + e.getMessage)
-    case e : Exception => renderError(500, "Internal Server Error " + e.getMessage)
+
+    case e : com.gravity.goose.network.NoArticleException => renderError(204, "Internal Server Error: " + e.getMessage)
+
+    case e : com.gravity.goose.network.BadRequestException => renderError(400, "Remote Server Error: " + e.getMessage)
+    case e : com.gravity.goose.network.NotAuthorizedException => renderError(403, "Remote Server Error: " + e.getMessage)
+    case e : com.gravity.goose.network.NotFoundException => renderError(404, "Remote Server Error: " + e.getMessage)
+    case e : com.gravity.goose.network.ServerErrorException => renderError(502, "Remote Server Error: " + e.getMessage)
+    case e : com.gravity.goose.network.UnhandledStatusCodeException => renderError(502, "Remote Server Error: " + e.getMessage)
+    case e : com.gravity.goose.network.GatewayTimeoutException => renderError(504, "Remote Server Error: " + e.getMessage)
+
+    case e : com.gravity.goose.network.NotHtmlException => renderError(422, "Internal Server Error: could not process response: " + e.getMessage)
+    case e : com.gravity.goose.network.MaxBytesException => renderError(507, "Internal Server Error: over max bytes for response: " + e.getMessage)
+
+    case e : Exception => {
+      e.printStackTrace()
+      renderError(500, "Internal Server: " + e.toString)
+    } 
   }
 
 }
