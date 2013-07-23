@@ -25,7 +25,7 @@ case class ExtractedArticle(
   val description:String, 
   val body:String, 
   val entities: List[NamedEntity], 
-  val links: List[String], 
+  val links: Map[String, String], 
   val topImage:String, 
   val additionalData:Map[String, String]
 )
@@ -288,7 +288,7 @@ class ArticleExtractorService {
       article.metaDescription, 
       article.cleanedArticleText, 
       entities.classify(text), 
-      Option(article.links).map(_.toList).getOrElse(null), 
+      Option(article.links).map(_.toMap).getOrElse(null), 
       Option(article.topImage).map(_.imageSrc).getOrElse(null), 
       Option(article.additionalData).map(_.toMap).getOrElse(null)
     )
