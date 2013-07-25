@@ -179,7 +179,7 @@ class ArticleExtractorService {
         val el = elements.get(0);
         if(el.hasAttr("content")) {
           val json = parse(el.attr("content"))
-          return DateUtils.parseDateStrictly((json \ "pub_date").extract[String], Array("yyyy-MM-dd'T'HH:mm:ssZZ"))
+          return DateUtils.parseDateStrictly((json \ "pub_date").extract[String], Array("yyyy-MM-dd'T'HH:mm:ssZ", "yyyy-MM-dd'T'HH:mm:ss'Z'", "yyyy-MM-dd'T'HH:mm:ssZZ", "yyyy-MM-dd'T'HH:mm:ssz"))
         }
       } 
       

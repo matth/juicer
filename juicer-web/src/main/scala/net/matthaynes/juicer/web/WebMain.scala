@@ -4,9 +4,12 @@ import org.eclipse.jetty.server.Server
 import org.eclipse.jetty.servlet.ServletHolder
 import org.eclipse.jetty.servlet.DefaultServlet
 import org.eclipse.jetty.servlet.ServletContextHandler
+import java.util.TimeZone
 import util.Properties
 
 object WebMain extends App {
+  System.setProperty("user.timezone", "GMT")
+  TimeZone.setDefault(TimeZone.getTimeZone("GMT"))
 
   val port = Properties.envOrElse("PORT", "8080").toInt
   val server  : Server = new Server(port)
