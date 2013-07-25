@@ -7,8 +7,7 @@ import extractors.PublishDateExtractor
 import extractors.AdditionalDataExtractor
 
 import org.apache.commons.lang.time._
-import java.text.SimpleDateFormat;
-import java.text.ParseException;
+import java.text.ParseException
 import org.jsoup.select.Selector
 import org.jsoup.nodes.Element
 import java.util.Date
@@ -180,7 +179,7 @@ class ArticleExtractorService {
         val el = elements.get(0);
         if(el.hasAttr("content")) {
           val json = parse(el.attr("content"))
-          return (json \ "pub_date").extract[Date]
+          return DateUtils.parseDateStrictly((json \ "pub_date").extract[String], Array("yyyy-MM-dd'T'HH:mm:ssZZ"))
         }
       } 
       
@@ -264,7 +263,7 @@ class ArticleExtractorService {
       )
 
       try {
-        return DateUtils.parseDate(dateStr, parsePatterns)
+        return DateUtils.parseDateStrictly(dateStr, parsePatterns)
       } catch {
         case e: ParseException => return null
       }
