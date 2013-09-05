@@ -17,7 +17,7 @@ object BuildSettings {
         scalacOptions += "-deprecation",
         fork in test := true,
         libraryDependencies ++= Seq(scalaTest, mockito),
-        resolvers := Seq(sonatypeRepo)
+        resolvers := Seq(sonatypeRepo, snacktoryRepo)
       )
 
   val projectSettings = Defaults.defaultSettings ++ globalSettings
@@ -25,6 +25,7 @@ object BuildSettings {
 
 object Resolvers {
   val sonatypeRepo = "Sonatype Release" at "http://oss.sonatype.org/content/repositories/releases"
+  val snacktoryRepo = "karussell_releases" at "https://github.com/karussell/mvnrepo/raw/master/releases"
 }
 
 object Dependencies {
@@ -34,17 +35,21 @@ object Dependencies {
   val liftJson     = "net.liftweb" % "lift-json_2.9.1" % "2.4"
   val mockito      = "org.mockito" % "mockito-core" % "1.8.4" % "test"
 
-  val jettyVersion = "7.4.0.v20110414"
+  val jettyVersion = "8.1.11.v20130520"
   val jettyServer = "org.eclipse.jetty" % "jetty-server" % jettyVersion
   val jettyServlet = "org.eclipse.jetty" % "jetty-servlet" % jettyVersion
   val jettyServerTest = jettyServer % "test"
-
+  
   val slf4j = "org.slf4j" % "slf4j-log4j12" % "1.6.6"
   val slf4jTest = slf4j % "test"
 
   val corenlp = "edu.stanford.nlp" % "stanford-corenlp" % "1.3.4" classifier "models" classifier ""
 
   val commonsLang = "commons-lang" % "commons-lang" % "2.6" 
+
+  val snacktory = "de.jetwick" % "snacktory" % "1.2"
+
+  val languageDetection = "com.cybozu.labs" % "langdetect" % "1.1-20120112"
 }
 
 object JuicerBuild extends Build {
@@ -67,7 +72,7 @@ object JuicerBuild extends Build {
     lazy val service = Project("juicer-service",
                       file("juicer-service"),
                       settings = projectSettings ++
-                      Seq(libraryDependencies ++= Seq(slf4j, slf4jTest, corenlp, liftJson, commonsLang))) dependsOn(goose)
+                      Seq(libraryDependencies ++= Seq(slf4j, slf4jTest, corenlp, liftJson, commonsLang, snacktory, languageDetection))) dependsOn(goose)
 
 
     lazy val web = Project("juicer-web",

@@ -8,12 +8,15 @@ import extractors.AdditionalDataExtractor
 
 import org.apache.commons.lang.time._
 import java.text.ParseException
+import org.jsoup.Jsoup
 import org.jsoup.select.Selector
 import org.jsoup.nodes.Element
 import java.util.Date
 import net.liftweb.json._
 
-// import com.gravity.goose.utils.Logging
+import de.jetwick.snacktory._
+import com.cybozu.labs.langdetect._
+import org.slf4j.{Logger, LoggerFactory}
 
 case class ExtractedArticle(
   val url:String, 
@@ -30,6 +33,7 @@ case class ExtractedArticle(
 )
 
 class ArticleExtractorService {
+  val logger =  LoggerFactory.getLogger(getClass)
 
   val config   = new Configuration
   config.setLocalStoragePath("/tmp/goose")
@@ -179,6 +183,7 @@ class ArticleExtractorService {
         val el = elements.get(0);
         if(el.hasAttr("content")) {
           val json = parse(el.attr("content"))
+
           return DateUtils.parseDateStrictly((json \ "pub_date").extract[String], Array("yyyy-MM-dd'T'HH:mm:ssZ", "yyyy-MM-dd'T'HH:mm:ss'Z'", "yyyy-MM-dd'T'HH:mm:ssZZ", "yyyy-MM-dd'T'HH:mm:ssz"))
         }
       } 
@@ -270,28 +275,97 @@ class ArticleExtractorService {
     }
   })
 
-  val goose    = new Goose(config)
+  val snacktory = new HtmlFetcher
+  val snacktory_extractor = new ArticleTextExtractor
+
+  val goose = new Goose(config)
 
   val entities = new NamedEntityService
 
-  def extract(url : String) : ExtractedArticle = {
-    val article  = goose.extractContent(url)
-    var text     = List(article.title, article.cleanedArticleText).filter(_ != null).mkString(" ")
+  def extract(url : String, force_snacktory : Boolean = false) : ExtractedArticle = {
+    // TODO: add language detection here too
+    if (force_snacktory) {
+      val article = snacktory.fetchAndExtract(url, 20000, true)
 
-    new ExtractedArticle(
-      article.canonicalLink, 
-      article.domain, 
-      article.linkhash, 
-      article.publishDate,
-      article.title, 
-      article.metaDescription, 
-      article.cleanedArticleText, 
-      entities.classify(text), 
-      Option(article.links).map(_.toMap).getOrElse(null), 
-      Option(article.topImage).map(_.imageSrc).getOrElse(null), 
-      Option(article.additionalData).map(_.toMap).getOrElse(null)
-    )
+      return new ExtractedArticle(
+        article.getCanonicalUrl, 
+        "", 
+        "", 
+        null, // DateUtils.parseDateStrictly(SHelper.completeDate(article.getDate), Array("yyyy/MM/dd")),
+        article.getTitle, 
+        article.getDescription, 
+        article.getText, 
+        entities.classify(article.getText), 
+        null, 
+        article.getImageUrl, 
+        null
+      )
+    } else {
+      val article  = goose.extractContent(url)
+      var text     = List(article.title, article.cleanedArticleText).filter(_ != null).mkString(" ")
 
+      return new ExtractedArticle(
+        article.canonicalLink, 
+        article.domain, 
+        article.linkhash, 
+        article.publishDate,
+        article.title, 
+        article.metaDescription, 
+        article.cleanedArticleText, 
+        entities.classify(text), 
+        Option(article.links).map(_.toMap).getOrElse(null), 
+        Option(article.topImage).map(_.imageSrc).getOrElse(null), 
+        Option(article.additionalData).map(_.toMap).getOrElse(null)
+      )
+    }
+  }
+
+  def extract_src(url : String, src : String, force_snacktory : Boolean = false) : ExtractedArticle = {
+    // this parses the document twice, should only do it once but there isn't an easy way to pass the parsed doc into goose
+    val language_detector = DetectorFactory.create
+    val document = Jsoup.parse(src)
+    logger.trace("jsoup parsed")
+    language_detector.append(document.title())
+    logger.trace("title parsed")
+    language_detector.append(document.body().text())
+    logger.trace("body parsed")
+    val lang = language_detector.detect
+    logger.trace("lang detected")
+
+    if (force_snacktory || lang != "en") {
+      val article = snacktory_extractor.extractContent(src)
+
+      return new ExtractedArticle(
+        article.getCanonicalUrl, 
+        "", 
+        "", 
+        null, // DateUtils.parseDateStrictly(SHelper.completeDate(article.getDate), Array("yyyy/MM/dd")),
+        article.getTitle, 
+        article.getDescription, 
+        article.getText, 
+        entities.classify(article.getText), 
+        null, 
+        article.getImageUrl, 
+        Map("language" -> lang, "extractor" -> "snacktory")
+      )
+    } else {
+      val article  = goose.extractContent(url, src)
+      var text     = List(article.title, article.cleanedArticleText).filter(_ != null).mkString(" ")
+
+      return new ExtractedArticle(
+        article.canonicalLink, 
+        article.domain, 
+        article.linkhash, 
+        article.publishDate,
+        article.title, 
+        article.metaDescription, 
+        article.cleanedArticleText, 
+        entities.classify(text), 
+        Option(article.links).map(_.toMap).getOrElse(null), 
+        Option(article.topImage).map(_.imageSrc).getOrElse(null), 
+        Option(article.additionalData ++ Map("language" -> lang, "extractor" -> "goose")).map(_.toMap).getOrElse(null)
+      )
+    }
   }
 
 }
