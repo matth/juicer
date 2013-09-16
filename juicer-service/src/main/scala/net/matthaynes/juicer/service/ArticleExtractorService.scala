@@ -10,7 +10,7 @@ import org.apache.commons.lang.time._
 import java.text.ParseException
 import org.jsoup.Jsoup
 import org.jsoup.select.Selector
-import org.jsoup.nodes.Element
+import org.jsoup.nodes.{Document, Element}
 import java.util.Date
 import net.liftweb.json._
 
@@ -277,6 +277,7 @@ class ArticleExtractorService {
 
   val snacktory = new HtmlFetcher
   val snacktory_extractor = new ArticleTextExtractor
+  val snacktory_formatter = new OutputFormatter
 
   val goose = new Goose(config)
 
@@ -288,7 +289,7 @@ class ArticleExtractorService {
       val article = snacktory.fetchAndExtract(url, 20000, true)
 
       return new ExtractedArticle(
-        article.getCanonicalUrl, 
+        SHelper.useDomainOfFirstArg4Second(url, article.getCanonicalUrl), // snacktory's hacky way of getting absolute urls
         "", 
         "", 
         null, // DateUtils.parseDateStrictly(SHelper.completeDate(article.getDate), Array("yyyy/MM/dd")),
@@ -321,9 +322,9 @@ class ArticleExtractorService {
   }
 
   def extract_src(url : String, src : String, force_snacktory : Boolean = false) : ExtractedArticle = {
-    // this parses the document twice, should only do it once but there isn't an easy way to pass the parsed doc into goose
+    // this parses the document twice for goose- there isn't an easy way to pass the parsed doc into goose at the moment
     val language_detector = DetectorFactory.create
-    val document = Jsoup.parse(src)
+    val document = Jsoup.parse(src, url)
     logger.trace("jsoup parsed")
     language_detector.append(document.title())
     logger.trace("title parsed")
@@ -333,10 +334,10 @@ class ArticleExtractorService {
     logger.trace("lang detected")
 
     if (force_snacktory || lang != "en") {
-      val article = snacktory_extractor.extractContent(src)
+      val article = snacktory_extractor.extractContent(new JResult, document, snacktory_formatter)
 
       return new ExtractedArticle(
-        article.getCanonicalUrl, 
+        get_canonical_url(document, url), 
         "", 
         "", 
         null, // DateUtils.parseDateStrictly(SHelper.completeDate(article.getDate), Array("yyyy/MM/dd")),
@@ -365,6 +366,32 @@ class ArticleExtractorService {
         Option(article.topImage).map(_.imageSrc).getOrElse(null), 
         Option(article.additionalData ++ Map("language" -> lang, "extractor" -> "goose")).map(_.toMap).getOrElse(null)
       )
+    }
+  }
+
+  /**
+   * Get the absolute canonical url from the document, or the default url if none is present
+   */
+  def get_canonical_url(doc: Document, default_url : String): String = {
+    var url = doc.select("link[rel=canonical]").attr("abs:href")
+    logger.trace("base uri: " + doc.baseUri)
+    logger.trace("canonical link: " + url)
+
+    if (url.isEmpty) {
+      url = doc.select("meta[property=og:url]").attr("abs:content")
+
+      logger.trace("canonical link meta og: " + url)
+      if (url.isEmpty) {
+        url = doc.select("meta[name=twitter:url]").attr("abs:content")
+
+        logger.trace("canonical link meta twitter: " + url)
+      }
+    }
+    if (url.nonEmpty) {
+      val href = url.trim
+      if (href.nonEmpty) href else default_url
+    } else {
+      default_url
     }
   }
 
