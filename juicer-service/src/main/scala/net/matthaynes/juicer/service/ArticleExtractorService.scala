@@ -71,6 +71,11 @@ class BbcNewsDataExtractor extends AdditionalDataExtractor {
       case None          =>
     }
 
+    getMetaTagValue(rootElement, "CPS_ASSET_TYPE") match {
+      case Some(asset_type) => attributes = attributes ++ Map("bbc.news.asset_type" -> asset_type)
+      case None          =>
+    }
+
     getMetaTagValue(rootElement, "CPS_ID") match {
       case Some(id) => attributes = attributes ++ Map("bbc.news.id" -> id)
       case None     =>
