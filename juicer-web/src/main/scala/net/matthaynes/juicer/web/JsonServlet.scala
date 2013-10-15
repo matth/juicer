@@ -48,6 +48,7 @@ trait JsonServlet extends ScalatraServlet {
     case e : com.gravity.goose.network.UnhandledStatusCodeException => renderError(502, "Remote Server Error: " + e.getMessage)
     case e : com.gravity.goose.network.GatewayTimeoutException => renderError(504, "Remote Server Error: " + e.getMessage)
 
+    case e : com.cybozu.labs.langdetect.LangDetectException => renderError(422, "Internal Server Error: " + e.getMessage)
     case e : com.gravity.goose.network.NotHtmlException => renderError(422, "Internal Server Error: could not process response: " + e.getMessage)
     case e : com.gravity.goose.network.MaxBytesException => renderError(507, "Internal Server Error: over max bytes for response: " + e.getMessage)
 
