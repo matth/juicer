@@ -8,6 +8,7 @@ For more info visit: http://juicer.herokuapp.com/
 
 ### Locally
 
+* Install sbt `brew install sbt`
 * Run `sbt test` to test the app (sbt must be sbt 0.11, not 0.7)
 * Run `sbt stage` to stage the app
 * Run `juicer-web/target/start` to run the server
