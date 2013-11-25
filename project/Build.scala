@@ -46,7 +46,7 @@ object Dependencies {
   val slf4jSimple = "org.slf4j" % "slf4j-simple" % "1.6.2"
   val slf4jSimpleTest = slf4jSimple % "test"
 
-  val goose = "com.gravity" % "goose" % "2.1.23-SNAPSHOT"
+  val goose = "com.gravity" % "goose" % "2.1.23"
   val corenlp = "edu.stanford.nlp" % "stanford-corenlp" % "1.3.4" exclude("xom", "xom")
 }
 
