@@ -13,7 +13,6 @@ object BuildSettings {
   val buildScalaVersion = "2.9.1"
 
   val globalSettings = Seq(
-        retrieveManaged := true,
         organization := buildOrganization,
         version := buildVersion,
         scalaVersion := buildScalaVersion,
