@@ -1,0 +1,120 @@
+#!/bin/bash
+
+# vim: set filetype=sh :
+
+set -e
+
+JAVA_HOME=/usr/lib/jvm/default-java/
+JAVA_OPTS="-Xmx1g"
+
+PROGRAM_NAME=$(basename $0)
+PROGRAM_VERSION=0.0.1
+PORT=9000
+PIDFILE=/dev/null
+LOGFILE=/dev/stderr
+DAEMONIZE=
+
+function print_usage {
+  echo "usage: $PROGRAM_NAME [options]"
+  echo ""
+  echo "options:"
+  echo "  -h, --help         Print this message and exit"
+  echo "  --version          Print program version and exit"
+  echo "  --port       PORT  Port to run on, default 9000"
+  echo "  --pidfile    FILE  Write process pid to pidfile"
+  echo "  --logfile    FILE  Write logs to logfile"
+  echo "  --daemonize        Daemonize and exit"
+}
+
+function required_arg {
+  [[ -z "$2" ]] && fail "Option $1 missing required argument" || true
+}
+
+function fail {
+  echo $1 1>&2
+  exit 1
+}
+
+function redirect-std {
+  [[ -t 0 ]] && exec <  /dev/null
+  [[ -t 1 ]] && exec >  /dev/null
+  [[ -t 2 ]] && exec 2> /dev/null
+}
+ 
+function close-fds {
+  eval exec {3..255}\>\&-
+}
+
+function daemonize {
+  (                                   # fork
+      [[ -t 0 ]] && exec <  /dev/null # Redirect stdin
+      cd /                            # ensure cwd isn't a mounted fs
+      close-fds                       # close unneeded fds
+      exec setsid /usr/bin/java $@
+  ) >> $LOGFILE 2>> $LOGFILE &
+}
+
+function handle_args {
+  while (( "$#" )); do
+
+    case "$1" in 
+      --port)
+        required_arg $1 $2 && shift
+        PORT=$1
+        ;;
+      --pidfile)
+        required_arg $1 $2 && shift
+        PIDFILE=$1
+        ;;
+      --logfile)
+        required_arg $1 $2 && shift
+        LOGFILE=$1
+        ;;
+      --daemonize)
+        DAEMONIZE=TRUE
+        ;;
+      --version)
+        echo $PROGRAM_VERSION && exit ;;
+      -h|--help)
+        print_usage && exit ;;
+      *)
+        fail "Unrecognized option $1" ;;
+    esac
+
+    shift
+
+  done
+}
+
+handle_args $@
+
+COMMAND="$JAVA_OPTS -jar /usr/share/juicer/juicer-server.jar"
+
+# Check pidfile
+if [ -n "$PIDFILE" ] ; then
+  touch "$PIDFILE" 2> /dev/null || fail "Cannot write pidfile $PIDFILE"
+fi
+
+# Check log file
+if [ -n "$LOGFILE" ] ; then
+  touch "$LOGFILE" 2> /dev/null || fail "Cannot write logfile $LOGFILE"
+fi
+
+# Start server
+
+export PORT=$PORT
+
+# Check daemonize
+if [ -n "$DAEMONIZE" ] ; then
+
+  ( ! ps -p `cat $PIDFILE` 2> /dev/null > /dev/null ) || fail "Process in $PIDFILE exists"
+
+  daemonize "$COMMAND"
+
+  PID=$!
+ 
+  echo $PID > $PIDFILE
+
+else
+  eval /usr/bin/java $COMMAND > $LOGFILE 2> $LOGFILE
+fi

@@ -1,0 +1,35 @@
+juicer (0.0.6-1) precise; urgency=low
+
+  * Update source packaging for Launchpad builders
+
+ -- Matt Haynes <matt.haynes@bbc.co.uk>  Mon, 25 Nov 2013 23:22:41 +0000
+
+juicer (0.0.5-1) precise; urgency=low
+
+  * Update source packaging for Launchpad builders
+
+ -- Matt Haynes <matt.haynes@bbc.co.uk>  Mon, 25 Nov 2013 21:23:01 +0000
+
+juicer (0.0.4-1) precise; urgency=low
+
+  * Update source packaging for Launchpad builders
+
+ -- Matt Haynes <matt.haynes@bbc.co.uk>  Mon, 25 Nov 2013 16:52:03 +0000
+
+juicer (0.0.3-1) precise; urgency=low
+
+  * Update source packaging for Launchpad builders
+
+ -- Matt Haynes <matt.haynes@bbc.co.uk>  Mon, 25 Nov 2013 16:27:51 +0000
+
+juicer (0.0.2-1) precise; urgency=low
+
+  * Update source packaging for Launchpad builders
+
+ -- Matt Haynes <matt.haynes@bbc.co.uk>  Mon, 25 Nov 2013 15:46:36 +0000
+
+juicer (0.0.1-1) precise; urgency=low
+
+  * Initial release.
+
+ -- Matt Haynes <matt.haynes@bbc.co.uk>  Wed, 20 Nov 2013 11:50:57 +0000

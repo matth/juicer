@@ -1,0 +1,7 @@
+# Override these if needed
+PORT=9000
+PID_FILE=/var/run/juicer.pid
+LOG_FILE=/var/log/juicer/juicer.log
+USER=www-data
+JAVA_HOME=/usr/lib/jvm/default-java/
+JAVA_OPTS="$JAVA_OPTS -Xmx1g"

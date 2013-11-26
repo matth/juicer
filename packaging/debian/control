@@ -1,0 +1,16 @@
+Source: juicer
+Section: devel
+Priority: extra
+Maintainer: Matt Haynes <matt@matthaynes.net>
+Build-Depends: debhelper (>= 9.0.0), javahelper (>= 0.40), default-jdk (>= 1:1.6)
+Standards-Version: 3.9.3
+Homepage: https://github.com/matth/juicer
+
+Package: juicer
+Architecture: all
+Depends: default-jre-headless (>= 1:1.6), ${misc:Depends}
+Description: Web service for extracting text, meta data and named entities
+ Juicer is a simple API for extracting meta data from the text in web pages.
+ It works best on "article" type pages such as those you find on blogs and
+ news websites. It may not work at all on some types of page.
+

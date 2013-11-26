@@ -1,0 +1,85 @@
+#!/bin/bash
+
+# vim: set filetype=sh :
+
+### BEGIN INIT INFO
+# Provides:          juicer
+# Required-Start:    $remote_fs $syslog $network
+# Required-Stop:     $remote_fs $syslog $network
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Manages the juicer entity extractor web server
+# Description:       Juicer is a simple API for extracting meta data from the
+#                    text in web pages. It works best on on "article" type pages
+#                    such as those you find on blogs and news websites. It may
+#                    not work at all on some types of page.
+### END INIT INFO
+
+PATH="${PATH:+$PATH:}/usr/sbin:/sbin"
+
+. /lib/lsb/init-functions
+
+# Config
+PORT=9000
+PID_FILE=/var/run/juicer.pid
+LOG_FILE=/var/log/juicer/juicer.log
+USER=www-data
+JAVA_HOME=/usr/lib/jvm/default-java/
+JAVA_OPTS="$JAVA_OPTS -Xmx1g"
+
+# Pull in any appropriate overrides
+if [ -r /etc/default/juicer ]; then
+  . /etc/default/juicer
+fi
+
+function start {
+  log_daemon_msg "Starting juicer server" "juicer"
+
+  # Ensure user can write log file
+  mkdir -p $(dirname $LOG_FILE)
+  chown $USER $(dirname $LOG_FILE)
+  touch $LOG_FILE
+  chown $USER $LOG_FILE
+  chmod 0640 $LOG_FILE
+
+  # Ensure user can write pid file
+  touch $PID_FILE
+  chown $USER $PID_FILE
+
+  start-stop-daemon --start -b --quiet --user $USER --pidfile $PID_FILE     \
+                    --exec /usr/bin/juicer-server                           \
+                    -- --pidfile $PID_FILE --logfile $LOG_FILE --port $PORT \
+                       --daemonize
+  status=$?
+  test x$status = x0 && chown root $PID_FILE
+  log_end_msg $status
+}
+
+function stop {
+  log_daemon_msg "Stopping juicer server" "juicer"
+  start-stop-daemon --stop --quiet --oknodo --pidfile $PID_FILE
+  status=$?
+  test x$status = x0 && rm $PID_FILE
+  log_end_msg $status
+}
+
+case "$1" in
+  start)
+    start;
+    ;;
+  stop)
+    stop;
+    ;;
+  restart|force-reload)
+    stop;
+    start;
+    ;;
+  status)
+    status_of_proc -p "$PID_FILE" "/usr/bin/juicer-server" "juicer server"
+    ;;
+  *)
+    echo "Usage: "$1" {start|stop|restart|force-reload}"
+    exit 192
+esac
+ 
+exit 0

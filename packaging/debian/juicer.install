@@ -1,0 +1,2 @@
+debian/juicer-server /usr/bin/
+debian/juicer-server.jar /usr/share/juicer

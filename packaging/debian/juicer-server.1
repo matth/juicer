@@ -1,0 +1,48 @@
+.TH juicer-server 1 "20 November 2013"
+
+.SH NAME
+
+juicer-server \- a web API for extracting text, meta data and named entities from HTML
+
+.SH SYNOPSIS
+
+juicer-server [options]
+
+.SH DESCRIPTION
+
+.B juicer
+Juicer is a simple API for extracting meta data from the text in web pages. It
+works best on on "article" type pages such as those you find on blogs and news
+websites. It may not work at all on some types of page.
+
+This script starts a webserver on your localhost
+
+For more information see: https://github.com/matth/juicer
+
+.SH OPTIONS
+
+.TP 9
+.B --help
+Show help message and exit.
+
+.TP
+.B --version
+Show version and exit.
+
+.TP
+.B --port
+Listen on this port number, defaults to 9000.
+
+.TP
+.B --logfile FILE
+Write logs to logfile, defaults to stderr
+
+.TP
+.B --daemonize
+Daemonize server
+
+.SH AUTHOR
+
+.UR matt@matthaynes.net
+Matt Haynes
+.UE
