@@ -26,8 +26,8 @@ case class ExtractedArticle(
   val title:String, 
   val description:String, 
   val body:String, 
-  val entities: List[NamedEntity], 
-  val links: Map[String, String], 
+  val entities:Option[List[NamedEntity]], 
+  val links:Map[String, String], 
   val topImage:String, 
   val additionalData:Map[String, String]
 )
@@ -35,7 +35,7 @@ case class ExtractedArticle(
 class ArticleExtractorService {
   val logger =  LoggerFactory.getLogger(getClass)
 
-  val config   = new Configuration
+  val config = new Configuration
   config.setLocalStoragePath("/tmp/goose")
   config.setEnableImageFetching(true)
 
@@ -276,14 +276,14 @@ class ArticleExtractorService {
   })
 
   val snacktory = new HtmlFetcher
-  val snacktory_extractor = new ArticleTextExtractor
-  val snacktory_formatter = new OutputFormatter
+  val snacktoryExtractor = new ArticleTextExtractor
+  val snacktoryFormatter = new OutputFormatter
 
   val goose = new Goose(config)
 
   val entities = new NamedEntityService
 
-  def extract(url : String, force_snacktory : Boolean = false) : ExtractedArticle = {
+  def extract(url : String, force_snacktory : Boolean = false, extract_entities : Boolean = true) : ExtractedArticle = {
     // TODO: add language detection here too
     if (force_snacktory) {
       val article = snacktory.fetchAndExtract(url, 20000, true)
@@ -296,7 +296,7 @@ class ArticleExtractorService {
         article.getTitle, 
         article.getDescription, 
         article.getText, 
-        entities.classify(article.getText), 
+        Option(extract_entities).filter(_ == true).map(_ => entities.classify(article.getText)), 
         null, 
         article.getImageUrl, 
         null
@@ -313,7 +313,7 @@ class ArticleExtractorService {
         article.title, 
         article.metaDescription, 
         article.cleanedArticleText, 
-        entities.classify(text), 
+        Option(extract_entities).filter(_ == true).map(_ => entities.classify(text)), 
         Option(article.links).map(_.toMap).getOrElse(null), 
         Option(article.topImage).map(_.imageSrc).getOrElse(null), 
         Option(article.additionalData).map(_.toMap).getOrElse(null)
@@ -321,7 +321,7 @@ class ArticleExtractorService {
     }
   }
 
-  def extract_src(url : String, src : String, force_snacktory : Boolean = false) : ExtractedArticle = {
+  def extract_src(url : String, src : String, force_snacktory : Boolean = false, extract_entities : Boolean = true) : ExtractedArticle = {
     // this parses the document twice for goose- there isn't an easy way to pass the parsed doc into goose at the moment
     val language_detector = DetectorFactory.create
     val document = Jsoup.parse(src, url)
@@ -334,7 +334,7 @@ class ArticleExtractorService {
     logger.trace("lang detected")
 
     if (force_snacktory || lang != "en") {
-      val article = snacktory_extractor.extractContent(new JResult, document, snacktory_formatter)
+      val article = snacktoryExtractor.extractContent(new JResult, document, snacktoryFormatter)
 
       return new ExtractedArticle(
         get_canonical_url(document, url), 
@@ -344,7 +344,7 @@ class ArticleExtractorService {
         article.getTitle, 
         article.getDescription, 
         article.getText, 
-        entities.classify(article.getText), 
+        Option(extract_entities).filter(_ == true).map(_ => entities.classify(article.getText)), 
         null, 
         article.getImageUrl, 
         Map("language" -> lang, "extractor" -> "snacktory")
@@ -361,7 +361,7 @@ class ArticleExtractorService {
         article.title, 
         article.metaDescription, 
         article.cleanedArticleText, 
-        entities.classify(text), 
+        Option(extract_entities).filter(_ == true).map(_ => entities.classify(text)), 
         Option(article.links).map(_.toMap).getOrElse(null), 
         Option(article.topImage).map(_.imageSrc).getOrElse(null), 
         Option(article.additionalData ++ Map("language" -> lang, "extractor" -> "goose")).map(_.toMap).getOrElse(null)

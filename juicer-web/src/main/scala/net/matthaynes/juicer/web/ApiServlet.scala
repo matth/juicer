@@ -8,9 +8,9 @@ class ApiServlet extends JsonServlet {
 
   get("/ping")        { Map("message"  -> "pong") }
 
-  get("/article")     { Map("article"  -> service.extract(params("url"), params.getOrElse("force_snacktory", "false").toBoolean  )) }
+  get("/article")     { Map("article"  -> service.extract(params("url"), params.getOrElse("force_snacktory", "false").toBoolean, params.getOrElse("extract_entities", "true").toBoolean )) }
 
-  post("/article")    { Map("article"  -> service.extract_src(params("url"), params("src"), params.getOrElse("force_snacktory", "false").toBoolean  )) }
+  post("/article")    { Map("article"  -> service.extract_src(params("url"), params("src"), params.getOrElse("force_snacktory", "false").toBoolean, params.getOrElse("extract_entities", "true").toBoolean )) }
 
   post("/entities")   { Map("entities" -> service.entities.classify(params("text"))) }
 
