@@ -364,12 +364,15 @@ class ArticleExtractorService {
   def get_language(doc: Document): String = {
     val language_detector = DetectorFactory.create
 
-    language_detector.append(doc.title())
-    logger.trace("title parsed")
-
     if (doc.body() != null) {
+      language_detector.append(doc.title())
+      logger.trace("title parsed")
+
       language_detector.append(doc.body().text())
       logger.trace("body parsed")
+    } else {
+      language_detector.append(doc.text())
+      logger.trace("no body, whole doc parsed")
     }
     
     return language_detector.detect
