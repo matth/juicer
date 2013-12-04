@@ -322,19 +322,10 @@ class ArticleExtractorService {
   }
 
   def extract_src(url : String, src : String, force_snacktory : Boolean = false, extract_entities : Boolean = true) : ExtractedArticle = {
-    // this parses the document twice for goose- there isn't an easy way to pass the parsed doc into goose at the moment
-    val language_detector = DetectorFactory.create
-    val document = Jsoup.parse(src, url)
-    logger.trace("jsoup parsed")
-    language_detector.append(document.title())
-    logger.trace("title parsed")
-    language_detector.append(document.body().text())
-    logger.trace("body parsed")
-    val lang = language_detector.detect
-    logger.trace("lang detected")
-
-    if (force_snacktory || lang != "en") {
+    if (force_snacktory) {
+      val document = Jsoup.parse(src, url)
       val article = snacktoryExtractor.extractContent(new JResult, document, snacktoryFormatter)
+      val lang = get_language(document)
 
       return new ExtractedArticle(
         get_canonical_url(document, url), 
@@ -351,7 +342,8 @@ class ArticleExtractorService {
       )
     } else {
       val article  = goose.extractContent(url, src)
-      var text     = List(article.title, article.cleanedArticleText).filter(_ != null).mkString(" ")
+      var text = List(article.title, article.cleanedArticleText).filter(_ != null).mkString(" ")
+      val lang = get_language(text)
 
       return new ExtractedArticle(
         article.canonicalLink, 
@@ -367,6 +359,27 @@ class ArticleExtractorService {
         Option(article.additionalData ++ Map("language" -> lang, "extractor" -> "goose")).map(_.toMap).getOrElse(null)
       )
     }
+  }
+
+  def get_language(doc: Document): String = {
+    val language_detector = DetectorFactory.create
+
+    language_detector.append(doc.title())
+    logger.trace("title parsed")
+
+    if (doc.body() != null) {
+      language_detector.append(doc.body().text())
+      logger.trace("body parsed")
+    }
+    
+    return language_detector.detect
+  }
+
+  def get_language(text: String): String = {
+    val language_detector = DetectorFactory.create
+
+    language_detector.append(text)
+    return language_detector.detect
   }
 
   /**
