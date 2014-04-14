@@ -25,7 +25,9 @@ object BuildSettings {
 
 object Resolvers {
   val sonatypeRepo = "Sonatype Release" at "http://oss.sonatype.org/content/repositories/releases"
-  val snacktoryRepo = "karussell_releases" at "https://github.com/karussell/mvnrepo/raw/master/releases"
+  // val snacktoryRepo = "karussell_releases" at "https://github.com/karussell/mvnrepo/raw/master/releases"
+  val snacktoryRepo = "skyshard_snapshots" at "https://github.com/skyshard/mvnrepo/raw/master/snapshots"
+
 }
 
 object Dependencies {
@@ -47,7 +49,7 @@ object Dependencies {
 
   val commonsLang = "commons-lang" % "commons-lang" % "2.6" 
 
-  val snacktory = "de.jetwick" % "snacktory" % "1.2"
+  val snacktory = "de.jetwick" % "snacktory" % "1.2-SNAPSHOT"
 
   val languageDetection = "com.cybozu.labs" % "langdetect" % "1.1-20120112"
 }
