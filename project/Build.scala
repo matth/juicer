@@ -49,7 +49,7 @@ object Dependencies {
 
   val commonsLang = "commons-lang" % "commons-lang" % "2.6" 
 
-  val snacktory = "de.jetwick" % "snacktory" % "1.2-SNAPSHOT"
+  val snacktory = "de.jetwick" % "snacktory" % "1.2.1-SNAPSHOT"
 
   val languageDetection = "com.cybozu.labs" % "langdetect" % "1.1-20120112"
 }
@@ -75,7 +75,6 @@ object JuicerBuild extends Build {
                       file("juicer-service"),
                       settings = projectSettings ++
                       Seq(libraryDependencies ++= Seq(slf4j, slf4jTest, corenlp, liftJson, commonsLang, snacktory, languageDetection))) dependsOn(goose)
-
 
     lazy val web = Project("juicer-web",
                       file("juicer-web"),

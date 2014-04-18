@@ -3,6 +3,8 @@ package net.matthaynes.juicer.service
 import com.gravity.goose._
 import images.Image
 
+import scala.collection.JavaConversions._
+
 import extractors.PublishDateExtractor
 import extractors.AdditionalDataExtractor
 
@@ -27,7 +29,7 @@ case class ExtractedArticle(
   val description:String, 
   val body:String, 
   val entities:Option[List[NamedEntity]], 
-  val links:Map[String, String], 
+  val links:List[Map[String, String]], 
   val topImage:String, 
   val additionalData:Map[String, String]
 )
@@ -284,26 +286,28 @@ class ArticleExtractorService {
   val entities = new NamedEntityService
 
   def extract(url : String, force_snacktory : Boolean = false, extract_entities : Boolean = true) : ExtractedArticle = {
-    // TODO: add language detection here too
     if (force_snacktory) {
       val article = snacktory.fetchAndExtract(url, 20000, true)
+      var text = List(article.getTitle, article.getDescription, article.getText).filter(_ != null).mkString(" ")
+      val lang = "" // get_language(text)
 
       return new ExtractedArticle(
         SHelper.useDomainOfFirstArg4Second(url, article.getCanonicalUrl), // snacktory's hacky way of getting absolute urls
         "", 
         "", 
-        null, // DateUtils.parseDateStrictly(SHelper.completeDate(article.getDate), Array("yyyy/MM/dd")),
+        article.getDate,
         article.getTitle, 
         article.getDescription, 
         article.getText, 
         Option(extract_entities).filter(_ == true).map(_ => entities.classify(article.getText)), 
-        null, 
+        Option(article.getLinks.toList.map(_.toMap)).getOrElse(null), 
         article.getImageUrl, 
-        null
+        Map("author" -> article.getAuthorName, "authorDescription" ->  article.getAuthorDescription, "language" -> lang, "extractor" -> "snacktory")
       )
     } else {
       val article  = goose.extractContent(url)
       var text     = List(article.title, article.cleanedArticleText).filter(_ != null).mkString(" ")
+      val lang = get_language(text)
 
       return new ExtractedArticle(
         article.canonicalLink, 
@@ -314,9 +318,9 @@ class ArticleExtractorService {
         article.metaDescription, 
         article.cleanedArticleText, 
         Option(extract_entities).filter(_ == true).map(_ => entities.classify(text)), 
-        Option(article.links).map(_.toMap).getOrElse(null), 
+        Option(article.links.map(_.toMap)).getOrElse(null), 
         Option(article.topImage).map(_.imageSrc).getOrElse(null), 
-        Option(article.additionalData).map(_.toMap).getOrElse(null)
+        Option(article.additionalData ++ Map("language" -> lang, "extractor" -> "goose")).map(_.toMap).getOrElse(null)
       )
     }
   }
@@ -325,20 +329,21 @@ class ArticleExtractorService {
     if (force_snacktory) {
       val document = Jsoup.parse(src, url)
       val article = snacktoryExtractor.extractContent(new JResult, document, snacktoryFormatter)
-      val lang = get_language(document)
+      var text = List(article.getTitle, article.getDescription, article.getText).filter(_ != null).mkString(" ")
+      val lang = "" // get_language(text)
 
       return new ExtractedArticle(
         get_canonical_url(document, url), 
         "", 
         "", 
-        null, // DateUtils.parseDateStrictly(SHelper.completeDate(article.getDate), Array("yyyy/MM/dd")),
+        article.getDate,
         article.getTitle, 
         article.getDescription, 
         article.getText, 
         Option(extract_entities).filter(_ == true).map(_ => entities.classify(article.getText)), 
-        null, 
+        Option(article.getLinks.toList.map(_.toMap)).getOrElse(null), 
         article.getImageUrl, 
-        Map("language" -> lang, "extractor" -> "snacktory")
+        Map("author" -> article.getAuthorName, "authorDescription" ->  article.getAuthorDescription, "language" -> lang, "extractor" -> "snacktory")
       )
     } else {
       val article  = goose.extractContent(url, src)
@@ -354,28 +359,11 @@ class ArticleExtractorService {
         article.metaDescription, 
         article.cleanedArticleText, 
         Option(extract_entities).filter(_ == true).map(_ => entities.classify(text)), 
-        Option(article.links).map(_.toMap).getOrElse(null), 
+        Option(article.links.map(_.toMap)).getOrElse(null), 
         Option(article.topImage).map(_.imageSrc).getOrElse(null), 
         Option(article.additionalData ++ Map("language" -> lang, "extractor" -> "goose")).map(_.toMap).getOrElse(null)
       )
     }
-  }
-
-  def get_language(doc: Document): String = {
-    val language_detector = DetectorFactory.create
-
-    if (doc.body() != null) {
-      language_detector.append(doc.title())
-      logger.trace("title parsed")
-
-      language_detector.append(doc.body().text())
-      logger.trace("body parsed")
-    } else {
-      language_detector.append(doc.text())
-      logger.trace("no body, whole doc parsed")
-    }
-    
-    return language_detector.detect
   }
 
   def get_language(text: String): String = {
