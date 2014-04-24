@@ -288,8 +288,8 @@ class ArticleExtractorService {
   def extract(url : String, force_snacktory : Boolean = false, extract_entities : Boolean = true) : ExtractedArticle = {
     if (force_snacktory) {
       val article = snacktory.fetchAndExtract(url, 20000, true)
-      var text = List(article.getTitle, article.getDescription, article.getText).filter(_ != null).mkString(" ")
-      val lang = "" // get_language(text)
+      var text = List(article.getTitle, article.getDescription).filter(_ != null).mkString(" ")
+      val lang = get_language(text)
 
       return new ExtractedArticle(
         SHelper.useDomainOfFirstArg4Second(url, article.getCanonicalUrl), // snacktory's hacky way of getting absolute urls
@@ -329,8 +329,8 @@ class ArticleExtractorService {
     if (force_snacktory) {
       val document = Jsoup.parse(src, url)
       val article = snacktoryExtractor.extractContent(new JResult, document, snacktoryFormatter)
-      var text = List(article.getTitle, article.getDescription, article.getText).filter(_ != null).mkString(" ")
-      val lang = "" // get_language(text)
+      var text = List(article.getTitle, article.getDescription).filter(_ != null).mkString(" ")
+      val lang = get_language(text)
 
       return new ExtractedArticle(
         get_canonical_url(document, url), 
