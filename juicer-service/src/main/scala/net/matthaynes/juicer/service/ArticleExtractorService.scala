@@ -10,10 +10,11 @@ import extractors.AdditionalDataExtractor
 
 import org.apache.commons.lang.time._
 import java.text.ParseException
+import java.net.URL
+import java.util.Date
 import org.jsoup.Jsoup
 import org.jsoup.select.Selector
 import org.jsoup.nodes.{Document, Element}
-import java.util.Date
 import net.liftweb.json._
 
 import de.jetwick.snacktory._
@@ -278,6 +279,8 @@ class ArticleExtractorService {
   })
 
   val snacktory = new HtmlFetcher
+  snacktory.setReferrer("https://www.google.com")
+  snacktory.setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.116 Safari/537.36")
   val snacktoryExtractor = new ArticleTextExtractor
   val snacktoryFormatter = new OutputFormatter
 
@@ -285,15 +288,16 @@ class ArticleExtractorService {
 
   val entities = new NamedEntityService
 
-  def extract(url : String, force_snacktory : Boolean = false, extract_entities : Boolean = true) : ExtractedArticle = {
-    if (force_snacktory) {
+  def extract(url : String, force_goose : Boolean = false, extract_entities : Boolean = true) : ExtractedArticle = {
+    if (!force_goose) {
       val article = snacktory.fetchAndExtract(url, 20000, true)
-      var text = List(article.getTitle, article.getDescription).filter(_ != null).mkString(" ")
+      var text = List(article.getTitle, article.getDescription, article.getText).filter(_ != null).mkString(" ")
+
       val lang = get_language(text)
 
       return new ExtractedArticle(
-        SHelper.useDomainOfFirstArg4Second(url, article.getCanonicalUrl), // snacktory's hacky way of getting absolute urls
-        "", 
+        article.getUrl,
+        get_domain(article.getUrl), 
         "", 
         article.getDate,
         article.getTitle, 
@@ -325,16 +329,17 @@ class ArticleExtractorService {
     }
   }
 
-  def extract_src(url : String, src : String, force_snacktory : Boolean = false, extract_entities : Boolean = true) : ExtractedArticle = {
-    if (force_snacktory) {
+  def extract_src(url : String, src : String, force_goose : Boolean = false, extract_entities : Boolean = true) : ExtractedArticle = {
+    if (!force_goose) {
       val document = Jsoup.parse(src, url)
       val article = snacktoryExtractor.extractContent(new JResult, document, snacktoryFormatter)
-      var text = List(article.getTitle, article.getDescription).filter(_ != null).mkString(" ")
+      var text = List(article.getTitle, article.getDescription, article.getText).filter(_ != null).mkString(" ")
       val lang = get_language(text)
+      val canonical_url = get_canonical_url(document, url)
 
       return new ExtractedArticle(
-        get_canonical_url(document, url), 
-        "", 
+        canonical_url, 
+        get_domain(canonical_url), 
         "", 
         article.getDate,
         article.getTitle, 
@@ -367,10 +372,14 @@ class ArticleExtractorService {
   }
 
   def get_language(text: String): String = {
-    val language_detector = DetectorFactory.create
+    try {
+      val language_detector = DetectorFactory.create
 
-    language_detector.append(text)
-    return language_detector.detect
+      language_detector.append(text)
+      return language_detector.detect
+    } catch {
+      case e: LangDetectException => return ""
+    } 
   }
 
   /**
@@ -399,4 +408,7 @@ class ArticleExtractorService {
     }
   }
 
+  def get_domain(url: String): String = {
+    new URL(url).getHost
+  }
 }
