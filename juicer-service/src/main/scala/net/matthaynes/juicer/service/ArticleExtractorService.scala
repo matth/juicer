@@ -284,20 +284,24 @@ class ArticleExtractorService {
   val snacktoryExtractor = new ArticleTextExtractor
   val snacktoryFormatter = new OutputFormatter
 
+  val ajax_fragment = "#!"
+  val escaped_fragment_replacement = "?_escaped_fragment_="
+  
   val goose = new Goose(config)
 
   val entities = new NamedEntityService
 
   def extract(url : String, force_goose : Boolean = false, extract_entities : Boolean = true) : ExtractedArticle = {
     if (!force_goose) {
-      val article = snacktory.fetchAndExtract(url, 20000, true)
+      val fixed_url = get_ajax_ugly_url(url)
+      val article = snacktory.fetchAndExtract(fixed_url, 20000, true)
       var text = List(article.getTitle, article.getDescription, article.getText).filter(_ != null).mkString(" ")
 
       val lang = get_language(text)
 
       return new ExtractedArticle(
-        article.getUrl,
-        get_domain(article.getUrl), 
+        get_ajax_pretty_url(article.getUrl),    // should be handling this + canonicalization inside snacktory
+        get_domain(article.getUrl),             //
         "", 
         article.getDate,
         article.getTitle, 
@@ -331,11 +335,12 @@ class ArticleExtractorService {
 
   def extract_src(url : String, src : String, force_goose : Boolean = false, extract_entities : Boolean = true) : ExtractedArticle = {
     if (!force_goose) {
-      val document = Jsoup.parse(src, url)
+      val fixed_url = get_ajax_ugly_url(url)
+      val document = Jsoup.parse(src, fixed_url)
       val article = snacktoryExtractor.extractContent(new JResult, document, snacktoryFormatter)
       var text = List(article.getTitle, article.getDescription, article.getText).filter(_ != null).mkString(" ")
       val lang = get_language(text)
-      val canonical_url = get_canonical_url(document, url)
+      val canonical_url = get_canonical_url(document, fixed_url)
 
       return new ExtractedArticle(
         canonical_url, 
@@ -408,6 +413,19 @@ class ArticleExtractorService {
     }
   }
 
+  def get_ajax_ugly_url(url: String): String = {
+    if (url.contains(ajax_fragment)) {
+      return url.replaceAllLiterally(ajax_fragment, escaped_fragment_replacement)
+    }
+    return url
+  }
+
+  def get_ajax_pretty_url(url: String): String = {
+    if (url.contains(escaped_fragment_replacement)) {
+      return url.replaceAllLiterally(escaped_fragment_replacement, ajax_fragment)
+    }
+    return url
+  }
   def get_domain(url: String): String = {
     new URL(url).getHost
   }
