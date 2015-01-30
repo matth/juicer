@@ -23,7 +23,7 @@ class ArticleExtractorServiceTest extends FunSuite {
 
   test("should extract article data") {
     when(service.goose.extractContent(url)).thenReturn(article)
-    val extracted = service.extract(url)
+    val extracted = service.extract(url, force_goose=true)
     assert(extracted.title == article.title)
     assert(extracted.description == article.metaDescription)
     assert(extracted.body == article.cleanedArticleText)

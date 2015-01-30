@@ -8,7 +8,7 @@ object BuildSettings {
 
   val buildOrganization = "net.matthaynes"
   val buildVersion = "1.0"
-  val buildScalaVersion = "2.9.2"
+  val buildScalaVersion = "2.11.5"
 
   val globalSettings = Seq(
         organization := buildOrganization,
@@ -31,17 +31,16 @@ object Resolvers {
 }
 
 object Dependencies {
-  val scalaTest    = "org.scalatest" %% "scalatest" % "1.6.1" % "test"
-  val scalatraTest = "org.scalatra" % "scalatra-scalatest_2.9.1" % "2.0.4" % "test"
-  val scalatra     = "org.scalatra" % "scalatra_2.9.1" % "2.0.4"
-  val liftJson     = "net.liftweb" % "lift-json_2.9.1" % "2.4"
+  val scalaTest    = "org.scalatest" % "scalatest_2.11" % "2.2.1" % "test"
+  val scalatraTest = "org.scalatra" %% "scalatra-scalatest" % "2.3.0" % "test"
+  val scalatra     = "org.scalatra" % "scalatra_2.11" % "2.3.0"
+  val liftJson     = "net.liftweb" % "lift-json_2.11" % "2.6"
   val mockito      = "org.mockito" % "mockito-core" % "1.8.4" % "test"
 
   val jettyVersion = "9.0.5.v20130815"
   val jettyServer = "org.eclipse.jetty" % "jetty-server" % jettyVersion
   val jettyServlet = "org.eclipse.jetty" % "jetty-servlet" % jettyVersion
   val jettyServerTest = jettyServer % "test"
-  
   val slf4j = "org.slf4j" % "slf4j-log4j12" % "1.6.6"
   val slf4jTest = slf4j % "test"
 

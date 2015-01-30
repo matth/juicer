@@ -8,7 +8,7 @@ class ApiServletTest extends ScalatraFunSuite  {
   val servletHolder = addServlet(classOf[ApiServlet], "/*")
 
   def jsonResponse : Boolean = {
-    header("Content-Type") == "application/json;charset=UTF-8"
+    header("Content-Type") == "application/json; charset=UTF-8"
   }
 
   def assertError(responseStatus : Int, responseMessage : String) {

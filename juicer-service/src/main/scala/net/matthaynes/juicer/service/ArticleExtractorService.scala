@@ -37,6 +37,7 @@ case class ExtractedArticle(
 
 class ArticleExtractorService {
   val logger =  LoggerFactory.getLogger(getClass)
+  implicit val formats = net.liftweb.json.DefaultFormats
 
   val config = new Configuration
   config.setLocalStoragePath("/tmp/goose")
@@ -337,7 +338,7 @@ class ArticleExtractorService {
     if (!force_goose) {
       val fixed_url = get_ajax_ugly_url(url)
       val document = Jsoup.parse(src, fixed_url)
-      val article = snacktoryExtractor.extractContent(new JResult, document, snacktoryFormatter)
+      val article = snacktoryExtractor.extractContent(new JResult, document, snacktoryFormatter, false)
       var text = List(article.getTitle, article.getDescription, article.getText).filter(_ != null).mkString(" ")
       val lang = get_language(text)
       val canonical_url = get_canonical_url(document, fixed_url)
