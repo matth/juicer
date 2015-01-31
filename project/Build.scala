@@ -31,10 +31,10 @@ object Resolvers {
 }
 
 object Dependencies {
-  val scalaTest    = "org.scalatest" % "scalatest_2.11" % "2.2.1" % "test"
+  val scalaTest    = "org.scalatest" %% "scalatest" % "2.2.1" % "test"
   val scalatraTest = "org.scalatra" %% "scalatra-scalatest" % "2.3.0" % "test"
-  val scalatra     = "org.scalatra" % "scalatra_2.11" % "2.3.0"
-  val liftJson     = "net.liftweb" % "lift-json_2.11" % "2.6"
+  val scalatra     = "org.scalatra" %% "scalatra" % "2.3.0"
+  val liftJson     = "net.liftweb" %% "lift-json" % "2.6"
   val mockito      = "org.mockito" % "mockito-core" % "1.8.4" % "test"
 
   val jettyVersion = "9.0.5.v20130815"
