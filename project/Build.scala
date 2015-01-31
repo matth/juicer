@@ -37,7 +37,7 @@ object Dependencies {
   val liftJson     = "net.liftweb" %% "lift-json" % "2.6"
   val mockito      = "org.mockito" % "mockito-core" % "1.8.4" % "test"
 
-  val jettyVersion = "9.0.5.v20130815"
+  val jettyVersion = "9.2.7.v20150116"
   val jettyServer = "org.eclipse.jetty" % "jetty-server" % jettyVersion
   val jettyServlet = "org.eclipse.jetty" % "jetty-servlet" % jettyVersion
   val jettyServerTest = jettyServer % "test"
