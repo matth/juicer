@@ -17,7 +17,7 @@ object BuildSettings {
         scalacOptions += "-deprecation",
         fork in test := true,
         libraryDependencies ++= Seq(scalaTest, mockito),
-        resolvers := Seq(sonatypeRepo, snacktoryRepo)
+        resolvers := Seq(sonatypeRepo)
       )
 
   val projectSettings = Defaults.defaultSettings ++ globalSettings
@@ -25,9 +25,6 @@ object BuildSettings {
 
 object Resolvers {
   val sonatypeRepo = "Sonatype Release" at "http://oss.sonatype.org/content/repositories/releases"
-  // val snacktoryRepo = "karussell_releases" at "https://github.com/karussell/mvnrepo/raw/master/releases"
-  val snacktoryRepo = "skyshard_snapshots" at "https://github.com/skyshard/mvnrepo/raw/master/snapshots"
-
 }
 
 object Dependencies {
@@ -48,8 +45,6 @@ object Dependencies {
 
   val commonsLang = "commons-lang" % "commons-lang" % "2.6" 
 
-  val snacktory = "de.jetwick" % "snacktory" % "1.2.1-SNAPSHOT"
-
   val languageDetection = "com.cybozu.labs" % "langdetect" % "1.1-20120112"
 }
 
@@ -60,8 +55,8 @@ object JuicerBuild extends Build {
 
     override lazy val settings = super.settings ++ globalSettings
 
-    //lazy val goose = ProjectRef(uri("git://github.com/skyshard/goose.git"), "goose")
     lazy val goose = ProjectRef(file("../goose/"), "goose")
+    lazy val snacktory = ProjectRef(file("../snacktory/"), "snacktory")
 
     lazy val root = Project("juicer",
                       file("."),
@@ -73,7 +68,7 @@ object JuicerBuild extends Build {
     lazy val service = Project("juicer-service",
                       file("juicer-service"),
                       settings = projectSettings ++
-                      Seq(libraryDependencies ++= Seq(slf4j, slf4jTest, corenlp, liftJson, commonsLang, snacktory, languageDetection))) dependsOn(goose)
+                      Seq(libraryDependencies ++= Seq(slf4j, slf4jTest, corenlp, liftJson, commonsLang, languageDetection))) dependsOn(goose, snacktory)
 
     lazy val web = Project("juicer-web",
                       file("juicer-web"),
